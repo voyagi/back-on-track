@@ -43,11 +43,12 @@ window.EXERCISE_ANIM = (function () {
     head(120, 28) + seg(120, 40, 120, 86) + seg(120, 50, 142, 76) + seg(120, 50, 98, 76) + seg(120, 86, 98, 128) + seg(120, 86, 142, 128)
   );
 
-  // Pelvic tilt: lying with knees bent, pelvis rocks (lower back arches then flattens).
+  // Pelvic tilt: lying with knees bent, the lower back arches up then presses flat. The two
+  // poses use a curved back (clear hump up vs press down) so the small movement still reads.
   var ptLegs = seg(150, 110, 176, 86) + seg(176, 86, 176, 122) + seg(150, 110, 166, 90) + seg(166, 90, 166, 122);
   A["pelvic-tilt"] = svg(
-    head(48, 104) + seg(60, 108, 150, 114) + ptLegs,
-    head(48, 108) + seg(60, 112, 150, 104) + ptLegs
+    head(46, 104) + back("M58 108 Q104 90 150 110") + ptLegs,
+    head(46, 110) + back("M58 112 Q104 120 150 110") + ptLegs
   );
 
   // Knee to chest: one knee draws up toward the chest, the other stays bent.

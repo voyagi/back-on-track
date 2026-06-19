@@ -57,7 +57,7 @@ window.CONTENT = {
       toastMagnet: "Opened from your magnet ✓",
       disclaimer:
         "This app helps you look after your back. It does not replace advice from your own physiotherapist or doctor. If you feel worse or worried, talk to them.",
-      switchLabel: "NL",
+      langName: "EN",
       switchTitle: "Schakel naar Nederlands",
     },
     exercises: [
@@ -156,7 +156,7 @@ window.CONTENT = {
       toastMagnet: "Geopend via je magneet ✓",
       disclaimer:
         "Deze app helpt je om voor je rug te zorgen. Hij vervangt geen advies van je eigen fysiotherapeut of dokter. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
-      switchLabel: "EN",
+      langName: "NL",
       switchTitle: "Switch to English",
     },
     exercises: [
