@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Back on Track — back pain self-help</title>
+    <meta name="description" content="A simple self-help toolkit for people with ongoing low back pain." />
+    <meta name="theme-color" content="#1565c0" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <button class="back-btn" id="back" aria-label="Back to home">←</button>
+        <h1 id="title" class="brand">Back on Track</h1>
+      </header>
+
+      <main>
+        <div id="screen" class="screen" aria-live="polite"></div>
+      </main>
+
+      <nav class="tabbar" aria-label="Main">
+        <a href="#/home" data-tab="home"><span class="ti">🏠</span>Home</a>
+        <a href="#/today" data-tab="today"><span class="ti">🏃</span>Move</a>
+        <a href="#/learn" data-tab="learn"><span class="ti">💡</span>Learn</a>
+        <a href="#/goal" data-tab="goal"><span class="ti">⭐</span>Goal</a>
+      </nav>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="content.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

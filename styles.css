@@ -1,0 +1,430 @@
+/*
+ * styles.css — Back on Track
+ *
+ * Design goals (driven by the target group: people with chronic low back pain and
+ * possibly low health literacy):
+ *   - Large text and large tap targets (min 56px) so it works for older hands/eyes.
+ *   - High contrast. Colour is never the ONLY signal: every section also has a label.
+ *   - A traffic-light colour system that matches the fridge magnets one-to-one:
+ *       green = move, blue = learn, amber = bad day, purple = your goal, red = get checked.
+ *   - Calm, friendly, uncluttered. One main action per screen.
+ */
+
+:root {
+  /* Section colours (match magnets.html exactly) */
+  --green: #2e7d32;
+  --green-tint: #e6f4ea;
+  --blue: #1565c0;
+  --blue-tint: #e7f0fb;
+  --amber: #e36209;
+  --amber-tint: #fdecdc;
+  --purple: #6a1b9a;
+  --purple-tint: #f1e6f7;
+  --red: #c62828;
+  --red-tint: #fbe7e7;
+
+  --ink: #1a1a1a;
+  --muted: #565656;
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --line: #e3e6ea;
+
+  --radius: 18px;
+  --tap: 56px;
+  --maxw: 480px;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Phone-width app frame, centred on bigger screens */
+.app {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+.app-header .back-btn {
+  border: 0;
+  background: var(--card);
+  width: var(--tap);
+  height: var(--tap);
+  min-width: var(--tap);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: none;
+}
+.app-header .back-btn.show { display: inline-flex; align-items: center; justify-content: center; }
+.app-header h1 { font-size: 20px; margin: 0; }
+.app-header .brand { font-weight: 800; letter-spacing: -0.2px; }
+
+/* ---------- Main / screens ---------- */
+main { flex: 1; padding: 4px 18px 110px; }
+.screen { animation: fade 0.18s ease; }
+.screen[hidden] { display: none; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.screen-title {
+  font-size: 26px;
+  margin: 6px 0 4px;
+  letter-spacing: -0.4px;
+}
+.screen-intro { color: var(--muted); margin: 0 0 18px; }
+
+/* Section accent: set --c per screen and reuse */
+.screen[data-c="green"] { --c: var(--green); --tint: var(--green-tint); }
+.screen[data-c="blue"] { --c: var(--blue); --tint: var(--blue-tint); }
+.screen[data-c="amber"] { --c: var(--amber); --tint: var(--amber-tint); }
+.screen[data-c="purple"] { --c: var(--purple); --tint: var(--purple-tint); }
+.screen[data-c="red"] { --c: var(--red); --tint: var(--red-tint); }
+.screen-title { color: var(--c, var(--ink)); }
+/* Headings receive programmatic focus on each route change so screen readers announce
+   the new screen. Suppress the ring there (it is not keyboard-initiated); links and
+   buttons keep their visible focus outlines. */
+#screen h1:focus, #screen h2:focus { outline: none; }
+
+/* ---------- Home ---------- */
+.hero {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  margin: 8px 0 16px;
+}
+.hero .hello { font-size: 22px; font-weight: 800; margin: 0 0 2px; }
+.hero .sub { color: var(--muted); margin: 0; }
+
+.goal-pinned {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--purple-tint);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-top: 14px;
+}
+.goal-pinned .star { font-size: 22px; }
+.goal-pinned .label { font-size: 13px; color: var(--purple); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+.goal-pinned .value { font-size: 18px; font-weight: 700; }
+.goal-pinned.empty .value { font-weight: 500; color: var(--muted); }
+
+/* Daily check-in faces */
+.checkin { margin: 18px 0 8px; }
+.checkin h2 { font-size: 17px; margin: 0 0 8px; }
+.faces { display: flex; gap: 6px; }
+.face {
+  flex: 1;
+  border: 2px solid var(--line);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px 2px 6px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  min-height: var(--tap);
+}
+.face .em { font-size: 28px; display: block; line-height: 1.1; }
+.face[aria-pressed="true"] { border-color: var(--ink); background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+/* Big colour-coded section buttons (the in-app twins of the magnets) */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 6px; }
+.tile {
+  text-decoration: none;
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+.tile .ico { font-size: 26px; }
+.tile small { font-weight: 600; opacity: 0.92; font-size: 13px; }
+.tile.green { background: var(--green); }
+.tile.blue { background: var(--blue); }
+.tile.amber { background: var(--amber); }
+.tile.purple { background: var(--purple); }
+.tile.red { background: var(--red); }
+.tile.wide { grid-column: 1 / -1; min-height: 76px; flex-direction: row; align-items: center; gap: 12px; }
+.tile.wide small { opacity: 0.92; }
+
+/* ---------- Cards (exercises, lessons) ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Exercise card: video placeholder + name + cue + done toggle */
+.exercise .media {
+  background: var(--tint);
+  border-radius: 12px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 10px;
+  color: var(--c);
+}
+.exercise .media .play {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--c); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; padding-left: 4px;
+}
+.exercise .media .stepno {
+  position: absolute; top: 8px; left: 10px;
+  font-weight: 800; font-size: 14px; opacity: 0.8;
+}
+.exercise h3 { margin: 2px 0 4px; font-size: 20px; }
+.exercise .cue { margin: 0 0 4px; }
+.exercise .reps { font-weight: 700; color: var(--c); margin: 0 0 12px; }
+.exercise .why { color: var(--muted); font-size: 15px; margin: 0 0 12px; }
+
+.done-btn {
+  width: 100%;
+  min-height: var(--tap);
+  border: 2px solid var(--c);
+  background: #fff;
+  color: var(--c);
+  font-weight: 800;
+  font-size: 17px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.done-btn[aria-pressed="true"] { background: var(--c); color: #fff; }
+.done-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+.today-progress {
+  background: var(--green-tint);
+  color: var(--green);
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Lesson card: tap to expand */
+.lesson summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--tap);
+}
+.lesson summary::-webkit-details-marker { display: none; }
+.lesson summary::after { content: "＋"; font-size: 22px; color: var(--muted); }
+.lesson[open] summary::after { content: "－"; }
+.lesson p { margin: 6px 0 4px; font-size: 17px; }
+
+/* ---------- Lists (steps, red flags) ---------- */
+.banner {
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  background: var(--tint);
+  color: var(--c);
+}
+.steps { list-style: none; padding: 0; margin: 0 0 16px; counter-reset: s; }
+.steps li {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px 14px 14px 52px;
+  margin-bottom: 10px;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.steps li::before {
+  counter-increment: s;
+  content: counter(s);
+  position: absolute; left: 12px; top: 12px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--c); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px;
+}
+.flags { list-style: none; padding: 0; margin: 0 0 16px; }
+.flags li {
+  background: var(--card);
+  border-left: 6px solid var(--red);
+  border-radius: 10px;
+  padding: 14px 14px 14px 14px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.action-box {
+  background: var(--red);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+/* ---------- Goal screen ---------- */
+.goal-input {
+  width: 100%;
+  min-height: var(--tap);
+  font-size: 18px;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.chip {
+  border: 2px solid var(--purple);
+  color: var(--purple);
+  background: #fff;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.primary-btn {
+  width: 100%;
+  min-height: var(--tap);
+  border: 0;
+  background: var(--c, var(--purple));
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+/* ---------- Disclaimer ---------- */
+.disclaimer {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding: 16px 6px 4px;
+  line-height: 1.4;
+}
+
+/* ---------- Bottom nav ---------- */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--maxw);
+  background: #fff;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 4px max(6px, env(safe-area-inset-bottom));
+  z-index: 10;
+}
+.tabbar a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 12px;
+  min-width: 60px;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.tabbar a .ti { font-size: 22px; }
+.tabbar a[aria-current="page"] { color: var(--ink); }
+
+/* ---------- Toast (shown when opened from a magnet QR) ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 30;
+  max-width: 90%;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- Install hint ---------- */
+.install-hint {
+  display: none;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 6px 0 14px;
+  font-size: 14px;
+  align-items: center;
+  gap: 10px;
+}
+.install-hint.show { display: flex; }
+.install-hint button {
+  margin-left: auto;
+  border: 0;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen, .toast { animation: none; transition: none; }
+}

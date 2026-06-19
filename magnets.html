@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Back on Track — printable fridge magnets</title>
+    <style>
+      :root {
+        --green: #2e7d32;
+        --blue: #1565c0;
+        --amber: #e36209;
+        --purple: #6a1b9a;
+        --red: #c62828;
+      }
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        background: #eef0f3;
+        color: #1a1a1a;
+      }
+
+      /* On-screen control bar (hidden when printing) */
+      .bar {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 14px 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .bar h1 { font-size: 16px; margin: 0 12px 0 0; }
+      .bar label { font-size: 13px; opacity: 0.85; }
+      .bar input {
+        flex: 1;
+        min-width: 240px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        border: 0;
+        font-size: 14px;
+      }
+      .bar button {
+        background: #fff;
+        color: #1a1a1a;
+        border: 0;
+        border-radius: 8px;
+        padding: 9px 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .bar .hint { flex-basis: 100%; font-size: 12px; opacity: 0.7; }
+
+      .sheet {
+        display: grid;
+        grid-template-columns: repeat(2, 60mm);
+        gap: 10mm;
+        justify-content: center;
+        padding: 14mm 0;
+      }
+
+      /* One magnet = 60mm square: colour headline on top, white QR panel below */
+      .magnet {
+        width: 60mm;
+        height: 60mm;
+        border-radius: 6mm;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        border: 1.5mm solid var(--c);
+      }
+      .magnet .head {
+        background: var(--c);
+        color: #fff;
+        padding: 4mm 4mm 3mm;
+        flex: 0 0 auto;
+      }
+      .magnet .head .title { font-size: 6.4mm; font-weight: 800; line-height: 1.05; }
+      .magnet .head .sub { font-size: 3.2mm; font-weight: 600; opacity: 0.95; margin-top: 1mm; }
+      .magnet .panel {
+        background: #fff;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3mm;
+        padding: 2mm 3mm 3mm;
+      }
+      .magnet .qr { width: 24mm; height: 24mm; }
+      .magnet .qr svg { width: 100%; height: 100%; display: block; }
+      .magnet .scan { font-size: 3mm; color: #444; line-height: 1.2; }
+      .magnet .scan b { color: var(--c); display: block; font-size: 3.4mm; }
+
+      .magnet.green { --c: var(--green); }
+      .magnet.blue { --c: var(--blue); }
+      .magnet.amber { --c: var(--amber); }
+      .magnet.purple { --c: var(--purple); }
+      .magnet.red { --c: var(--red); }
+
+      @media print {
+        .bar { display: none; }
+        body { background: #fff; }
+        .sheet { padding: 8mm; }
+        .magnet { box-shadow: none; }
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <h1>Fridge magnets</h1>
+      <label for="base">App address (where you deployed the app):</label>
+      <input id="base" type="text" />
+      <button id="apply">Update QR codes</button>
+      <button id="print">Print / Save PDF</button>
+      <p class="hint">
+        Each QR opens its matching section of the app. Set the address to your deployed URL,
+        click Update, then Print and save as PDF for a magnet-printing service. (Tip: you can also
+        pass it once with <code>?base=https://your-url/</code> in this page's address.)
+      </p>
+    </div>
+
+    <div class="sheet" id="sheet"></div>
+
+    <script src="vendor/qrcode.js"></script>
+    <script>
+      // CHANGE THIS to your deployed app address once it is live.
+      var BASE_URL = "https://your-app-url.example/";
+
+      // The five magnets. order/colour/route match the app one-to-one.
+      var MAGNETS = [
+        { c: "green", route: "today", title: "Move a little, often", sub: "Today's gentle exercises" },
+        { c: "blue", route: "learn", title: "Hurt isn't harm", sub: "Understand your back" },
+        { c: "amber", route: "flare", title: "Bad day?", sub: "Open your flare-up plan" },
+        { c: "purple", route: "goal", title: "Remember your why", sub: "Your goal" },
+        { c: "red", route: "safety", title: "When to get checked", sub: "Warning signs" },
+      ];
+
+      function linkFor(route) {
+        var base = BASE_URL.trim();
+        if (!/\/$/.test(base) && !/\.html$/.test(base)) base += "/";
+        return base + "?from=magnet#/" + route;
+      }
+
+      function qrSvg(url) {
+        var qr = qrcode(0, "H"); // type 0 = auto-size, H = high error correction (survives rounded corners)
+        qr.addData(url);
+        qr.make();
+        return qr.createSvgTag({ cellSize: 2, margin: 1, scalable: true });
+      }
+
+      function render() {
+        var sheet = document.getElementById("sheet");
+        sheet.innerHTML = MAGNETS.map(function (m) {
+          var url = linkFor(m.route);
+          return (
+            '<div class="magnet ' + m.c + '">' +
+            '<div class="head"><div class="title">' + m.title + "</div>" +
+            '<div class="sub">' + m.sub + "</div></div>" +
+            '<div class="panel"><div class="qr">' + qrSvg(url) + "</div>" +
+            '<div class="scan"><b>Scan me</b>with your<br>phone camera</div></div>' +
+            "</div>"
+          );
+        }).join("");
+      }
+
+      // Allow ?base= override so it can be set without editing the file.
+      var q = new URLSearchParams(location.search).get("base");
+      if (q) BASE_URL = q;
+      document.getElementById("base").value = BASE_URL;
+
+      document.getElementById("apply").addEventListener("click", function () {
+        BASE_URL = document.getElementById("base").value || BASE_URL;
+        render();
+      });
+      document.getElementById("print").addEventListener("click", function () {
+        window.print();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
