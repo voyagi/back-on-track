@@ -156,12 +156,13 @@
       }
 
       function qrSvg(url) {
-        // Q error correction (25%) keeps the QR robust but less dense than H, so the
-        // modules stay big enough to scan at ~26mm print size. margin 2 = a proper quiet zone.
+        // Q error correction (25%) keeps the QR robust but less dense than H, so the modules
+        // stay big enough to scan at ~26mm print size. margin 8 = a full 4-module quiet zone
+        // (cellSize * 4), the spec minimum for reliable scanning.
         var qr = qrcode(0, "Q");
         qr.addData(url);
         qr.make();
-        return qr.createSvgTag({ cellSize: 2, margin: 2, scalable: true });
+        return qr.createSvgTag({ cellSize: 2, margin: 8, scalable: true });
       }
 
       function render() {
