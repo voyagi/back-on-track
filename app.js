@@ -20,7 +20,15 @@
   function load() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
   }
-  function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  function save() {
+    // Guarded: Safari private mode and a full quota throw on setItem. If that happens the
+    // app keeps working from in-memory state for the session instead of crashing on every save.
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function nextLang() {
+    var keys = Object.keys(window.CONTENT);
+    return keys[(keys.indexOf(lang) + 1) % keys.length];
+  }
   var state = load();
   if (!state.days) state.days = {};
 
@@ -95,7 +103,13 @@
       if (label && C.ui.nav[tab]) label.textContent = C.ui.nav[tab];
     });
     var lb = el("langBtn");
-    if (lb) { lb.textContent = "🌐 " + C.ui.switchLabel; lb.setAttribute("title", C.ui.switchTitle); lb.setAttribute("aria-label", C.ui.switchTitle); }
+    if (lb) {
+      // Show the NEXT language's own name, so adding a third language to content.js just works.
+      var nn = window.CONTENT[nextLang()].ui.langName || nextLang().toUpperCase();
+      lb.textContent = "🌐 " + nn;
+      lb.setAttribute("title", C.ui.switchTitle);
+      lb.setAttribute("aria-label", C.ui.switchTitle);
+    }
   }
 
   /* ---------------- routing ---------------- */
@@ -286,7 +300,7 @@
     document.documentElement.lang = lang;
     el("back").addEventListener("click", function () { if (currentRoute() !== "home") location.hash = "#/home"; });
     var lb = el("langBtn");
-    if (lb) lb.addEventListener("click", function () { setLang(lang === "en" ? "nl" : "en"); });
+    if (lb) lb.addEventListener("click", function () { setLang(nextLang()); });
     applyChrome();
     route();
     if (/[?&]from=magnet/.test(location.search)) {

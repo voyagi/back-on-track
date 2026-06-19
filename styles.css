@@ -152,7 +152,7 @@ main { flex: 1; padding: 4px 18px 110px; }
 }
 .goal-pinned .star { font-size: 22px; }
 .goal-pinned .label { font-size: 13px; color: var(--purple); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
-.goal-pinned .value { font-size: 18px; font-weight: 700; }
+.goal-pinned .value { font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
 .goal-pinned.empty .value { font-weight: 500; color: var(--muted); }
 
 /* Daily check-in faces */
