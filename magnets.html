@@ -34,7 +34,7 @@
       .bar label { font-size: 13px; opacity: 0.85; }
       .bar input {
         flex: 1;
-        min-width: 240px;
+        min-width: 220px;
         padding: 9px 12px;
         border-radius: 8px;
         border: 0;
@@ -49,6 +49,10 @@
         font-weight: 700;
         cursor: pointer;
       }
+      .langsel { flex-basis: 100%; display: flex; align-items: center; gap: 8px; }
+      .langsel .lbl { font-size: 13px; opacity: 0.85; }
+      .langbtn { background: #333; color: #fff; border: 1px solid #555; }
+      .langbtn.active { background: #fff; color: #1a1a1a; }
       .bar .hint { flex-basis: 100%; font-size: 12px; opacity: 0.7; }
 
       .sheet {
@@ -70,23 +74,10 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
         border: 1.5mm solid var(--c);
       }
-      .magnet .head {
-        background: var(--c);
-        color: #fff;
-        padding: 4mm 4mm 3mm;
-        flex: 0 0 auto;
-      }
+      .magnet .head { background: var(--c); color: #fff; padding: 4mm 4mm 3mm; flex: 0 0 auto; }
       .magnet .head .title { font-size: 6.4mm; font-weight: 800; line-height: 1.05; }
       .magnet .head .sub { font-size: 3.2mm; font-weight: 600; opacity: 0.95; margin-top: 1mm; }
-      .magnet .panel {
-        background: #fff;
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 3mm;
-        padding: 2mm 3mm 3mm;
-      }
+      .magnet .panel { background: #fff; flex: 1; display: flex; align-items: center; justify-content: center; gap: 3mm; padding: 2mm 3mm 3mm; }
       .magnet .qr { width: 24mm; height: 24mm; }
       .magnet .qr svg { width: 100%; height: 100%; display: block; }
       .magnet .scan { font-size: 3mm; color: #444; line-height: 1.2; }
@@ -110,14 +101,18 @@
   <body>
     <div class="bar">
       <h1>Fridge magnets</h1>
-      <label for="base">App address (where you deployed the app):</label>
+      <label for="base">App address:</label>
       <input id="base" type="text" />
       <button id="apply">Update QR codes</button>
       <button id="print">Print / Save PDF</button>
+      <div class="langsel">
+        <span class="lbl">Taal / Language:</span>
+        <button id="langEn" class="langbtn">English</button>
+        <button id="langNl" class="langbtn">Nederlands</button>
+      </div>
       <p class="hint">
-        Each QR opens its matching section of the app. Set the address to your deployed URL,
-        click Update, then Print and save as PDF for a magnet-printing service. (Tip: you can also
-        pass it once with <code>?base=https://your-url/</code> in this page's address.)
+        Pick a language, then Print / Save PDF. Each QR opens the matching section of the app
+        in that language. The app address is already set to the live site.
       </p>
     </div>
 
@@ -125,58 +120,79 @@
 
     <script src="vendor/qrcode.js"></script>
     <script>
-      // Live app address (GitHub Pages). Change only if you move the app elsewhere.
+      // Live app address. Change only if you move the app elsewhere.
       var BASE_URL = "https://voyagi.github.io/back-on-track/";
 
-      // The five magnets. order/colour/route match the app one-to-one.
-      var MAGNETS = [
-        { c: "green", route: "today", title: "Move a little, often", sub: "Today's gentle exercises" },
-        { c: "blue", route: "learn", title: "Hurt isn't harm", sub: "Understand your back" },
-        { c: "amber", route: "flare", title: "Bad day?", sub: "Open your flare-up plan" },
-        { c: "purple", route: "goal", title: "Remember your why", sub: "Your goal" },
-        { c: "red", route: "safety", title: "When to get checked", sub: "Warning signs" },
-      ];
+      // Each language: the "scan" label + the five magnets (colour/route match the app).
+      var DATA = {
+        en: {
+          scan: { a: "Scan me", b: "with your<br>phone camera" },
+          magnets: [
+            { c: "green", route: "today", title: "Move a little, often", sub: "Today's gentle exercises" },
+            { c: "blue", route: "learn", title: "Hurt isn't harm", sub: "Understand your back" },
+            { c: "amber", route: "flare", title: "Bad day?", sub: "Open your flare-up plan" },
+            { c: "purple", route: "goal", title: "Remember your why", sub: "Your goal" },
+            { c: "red", route: "safety", title: "When to get checked", sub: "Warning signs" },
+          ],
+        },
+        nl: {
+          scan: { a: "Scan mij", b: "met je<br>telefooncamera" },
+          magnets: [
+            { c: "green", route: "today", title: "Beweeg een beetje, vaak", sub: "Oefeningen van vandaag" },
+            { c: "blue", route: "learn", title: "Pijn is geen schade", sub: "Begrijp je rug" },
+            { c: "amber", route: "flare", title: "Slechte dag?", sub: "Open je opvlamming-plan" },
+            { c: "purple", route: "goal", title: "Weet weer waarom", sub: "Jouw doel" },
+            { c: "red", route: "safety", title: "Wanneer naar de dokter", sub: "Waarschuwingstekens" },
+          ],
+        },
+      };
+      var lang = "en";
 
       function linkFor(route) {
         var base = BASE_URL.trim();
         if (!/\/$/.test(base) && !/\.html$/.test(base)) base += "/";
-        return base + "?from=magnet#/" + route;
+        // ?lang= makes the app open in the magnet's language even on a foreign-language phone.
+        return base + "?from=magnet&lang=" + lang + "#/" + route;
       }
 
       function qrSvg(url) {
-        var qr = qrcode(0, "H"); // type 0 = auto-size, H = high error correction (survives rounded corners)
+        var qr = qrcode(0, "H"); // type 0 = auto-size, H = high error correction
         qr.addData(url);
         qr.make();
         return qr.createSvgTag({ cellSize: 2, margin: 1, scalable: true });
       }
 
       function render() {
-        var sheet = document.getElementById("sheet");
-        sheet.innerHTML = MAGNETS.map(function (m) {
-          var url = linkFor(m.route);
-          return (
-            '<div class="magnet ' + m.c + '">' +
-            '<div class="head"><div class="title">' + m.title + "</div>" +
-            '<div class="sub">' + m.sub + "</div></div>" +
-            '<div class="panel"><div class="qr">' + qrSvg(url) + "</div>" +
-            '<div class="scan"><b>Scan me</b>with your<br>phone camera</div></div>' +
-            "</div>"
-          );
-        }).join("");
+        var d = DATA[lang];
+        document.getElementById("sheet").innerHTML = d.magnets
+          .map(function (m) {
+            return (
+              '<div class="magnet ' + m.c + '">' +
+              '<div class="head"><div class="title">' + m.title + "</div>" +
+              '<div class="sub">' + m.sub + "</div></div>" +
+              '<div class="panel"><div class="qr">' + qrSvg(linkFor(m.route)) + "</div>" +
+              '<div class="scan"><b>' + d.scan.a + "</b>" + d.scan.b + "</div></div>" +
+              "</div>"
+            );
+          })
+          .join("");
+        document.getElementById("langEn").classList.toggle("active", lang === "en");
+        document.getElementById("langNl").classList.toggle("active", lang === "nl");
       }
 
-      // Allow ?base= override so it can be set without editing the file.
-      var q = new URLSearchParams(location.search).get("base");
-      if (q) BASE_URL = q;
+      // ?base= and ?lang= overrides so it can be set without editing the file.
+      var params = new URLSearchParams(location.search);
+      if (params.get("base")) BASE_URL = params.get("base");
+      if (params.get("lang") === "nl" || params.get("lang") === "en") lang = params.get("lang");
       document.getElementById("base").value = BASE_URL;
 
       document.getElementById("apply").addEventListener("click", function () {
         BASE_URL = document.getElementById("base").value || BASE_URL;
         render();
       });
-      document.getElementById("print").addEventListener("click", function () {
-        window.print();
-      });
+      document.getElementById("print").addEventListener("click", function () { window.print(); });
+      document.getElementById("langEn").addEventListener("click", function () { lang = "en"; render(); });
+      document.getElementById("langNl").addEventListener("click", function () { lang = "nl"; render(); });
 
       render();
     </script>

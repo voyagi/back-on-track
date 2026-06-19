@@ -22,10 +22,13 @@ is made for that group.
 The big self-management apps assume a clinician sets them up, good reading ability, and a
 data connection. This one is the opposite, on purpose:
 
-- **Video-first, few words.** Short sentences, one idea per line (~grade-6 reading level).
+- **Animation-first, few words.** Each exercise shows a looping movement demo; short
+  sentences, one idea per line (~grade-6 reading level).
 - **Big text, big buttons** (56px minimum) for older hands and eyes.
 - **A traffic-light colour system** that needs no reading to understand:
   green = move, amber = bad day go gentle, red = get checked. Blue = learn, purple = your why.
+- **English and Dutch.** A 🌐 toggle switches the whole app live; it auto-starts in Dutch on
+  a Dutch phone, and a Dutch magnet QR opens it in Dutch.
 - **Works offline and with no account.** Open it anywhere, anytime. Nothing to log into.
 - **Nothing leaves the phone.** All data (your goal, check-ins, progress) is stored on the
   device only — no servers, no personal data collected (privacy by design / GDPR-friendly).
@@ -66,9 +69,10 @@ The QR codes need a real public address. Easiest free options (static hosting):
 
 ## The fridge magnets
 
-Five magnets. Print `magnets.html` (it lays them out at 60 × 60 mm). Each QR opens
-`<app-url>?from=magnet#/<section>`, and the app shows a small "Opened from your magnet ✓"
-confirmation so you can demo the link live.
+Five magnets, in **English or Dutch** (pick the language in `magnets.html`, then Print /
+Save PDF; it lays them out at 60 × 60 mm). Each QR opens
+`<app-url>?from=magnet&lang=<en|nl>#/<section>`, so a Dutch magnet opens the app in Dutch.
+The app shows a small "Opened from your magnet ✓" confirmation so you can demo the link live.
 
 | # | Colour | Hex | What it says | Subline | Opens |
 |---|--------|-----|--------------|---------|-------|
@@ -93,14 +97,12 @@ corners or a small scratch.
 
 ## What is left to add (and is meant to be — this is a demo)
 
-- **Exercise videos.** Each exercise card has a styled video placeholder. Film the six
-  moves yourself (phone on a tripod, 10–20 seconds each) and drop them in. Filming them
-  with your **real patient's** feedback is exactly the "applied in practice" evidence that
-  pushes LO1/LO2 to *above expected level*.
-- **Translation.** All text is in `content.js`. Adding Dutch plus one community language
-  (e.g. Turkish or Arabic) directly addresses the cultural-context criterion.
-- **Optional PNG icons** for older iOS home screens (the app currently ships an SVG icon,
-  which installs fine on modern Android/desktop Chrome).
+- **Exercise videos (optional upgrade).** Each exercise ships a clean looping animation. If
+  you want real footage, film the six moves yourself (phone on a tripod, 10–20 seconds each)
+  and drop them in. Filming with your **real patient's** feedback is exactly the "applied in
+  practice" evidence that pushes LO1/LO2 to *above expected level*.
+- **More languages.** English and Dutch are built in (`content.js`). Adding a community
+  language (e.g. Turkish or Arabic) would further address the cultural-context criterion.
 
 ## How it maps to the Module 7 learning outcomes
 
@@ -120,11 +122,12 @@ corners or a small scratch.
 index.html            app shell
 styles.css            design system (colours match the magnets)
 app.js                router + on-device state + screens
-content.js            ALL patient text (edit/translate here)
+content.js            ALL patient text, English + Dutch (edit/translate here)
+exercise-anim.js      looping SVG demonstration per exercise
 manifest.webmanifest  install metadata
 sw.js                 offline service worker
-icon.svg              app icon
-magnets.html          printable 5-magnet sheet (set your URL, print)
+icon.svg / icon-*.png app icons (SVG + 180/192/512 PNG for iOS/Android)
+magnets.html          printable 5-magnet sheet, English or Dutch
 vendor/qrcode.js      QR generator (MIT, Kazuhiko Arase) — used only by magnets.html
 tools/serve.cjs       tiny local preview server
 ```

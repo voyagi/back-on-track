@@ -5,7 +5,7 @@
  * "use it wherever and whenever" requirement and for people with patchy data).
  * Bump CACHE when you change any cached file so users get the update.
  */
-var CACHE = "bot-v5";
+var CACHE = "bot-v6";
 var ASSETS = [
   ".",
   "index.html",
@@ -15,6 +15,9 @@ var ASSETS = [
   "exercise-anim.js",
   "manifest.webmanifest",
   "icon.svg",
+  "icon-180.png",
+  "icon-192.png",
+  "icon-512.png",
 ];
 
 self.addEventListener("install", function (e) {

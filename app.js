@@ -29,8 +29,11 @@
     var nav = (navigator.language || "en").toLowerCase();
     return nav.indexOf("nl") === 0 ? "nl" : "en";
   }
-  var lang = state.lang || detectLang();
+  var qLang = (location.search.match(/[?&]lang=(en|nl)\b/) || [])[1];
+  var lang = qLang || state.lang || detectLang();
   if (!window.CONTENT[lang]) lang = "en";
+  // A magnet QR can carry ?lang=nl so it opens (and remembers) the right language.
+  if (qLang && state.lang !== qLang) { state.lang = qLang; save(); }
   var C = window.CONTENT[lang];
 
   function setLang(l) {
