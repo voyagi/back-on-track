@@ -5,13 +5,14 @@
  * "use it wherever and whenever" requirement and for people with patchy data).
  * Bump CACHE when you change any cached file so users get the update.
  */
-var CACHE = "bot-v4";
+var CACHE = "bot-v5";
 var ASSETS = [
   ".",
   "index.html",
   "styles.css",
   "app.js",
   "content.js",
+  "exercise-anim.js",
   "manifest.webmanifest",
   "icon.svg",
 ];

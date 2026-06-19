@@ -16,6 +16,7 @@
       <header class="app-header">
         <button class="back-btn" id="back" aria-label="Back to home">←</button>
         <h1 id="title" class="brand">Back on Track</h1>
+        <button class="lang-btn" id="langBtn">🌐 NL</button>
       </header>
 
       <main>
@@ -23,16 +24,17 @@
       </main>
 
       <nav class="tabbar" aria-label="Main">
-        <a href="#/home" data-tab="home"><span class="ti">🏠</span>Home</a>
-        <a href="#/today" data-tab="today"><span class="ti">🏃</span>Move</a>
-        <a href="#/learn" data-tab="learn"><span class="ti">💡</span>Learn</a>
-        <a href="#/goal" data-tab="goal"><span class="ti">⭐</span>Goal</a>
+        <a href="#/home" data-tab="home"><span class="ti">🏠</span><span class="tl">Home</span></a>
+        <a href="#/today" data-tab="today"><span class="ti">🏃</span><span class="tl">Move</span></a>
+        <a href="#/learn" data-tab="learn"><span class="ti">💡</span><span class="tl">Learn</span></a>
+        <a href="#/goal" data-tab="goal"><span class="ti">⭐</span><span class="tl">Goal</span></a>
       </nav>
 
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
 
     <script src="content.js"></script>
+    <script src="exercise-anim.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

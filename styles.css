@@ -87,6 +87,22 @@ body {
 .app-header .back-btn.show { display: inline-flex; align-items: center; justify-content: center; }
 .app-header h1 { font-size: 20px; margin: 0; }
 .app-header .brand { font-weight: 800; letter-spacing: -0.2px; }
+.lang-btn {
+  margin-left: auto;
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  min-height: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
 
 /* ---------- Main / screens ---------- */
 main { flex: 1; padding: 4px 18px 110px; }
@@ -212,6 +228,20 @@ main { flex: 1; padding: 4px 18px 110px; }
 .exercise .media .stepno {
   position: absolute; top: 8px; left: 10px;
   font-weight: 800; font-size: 14px; opacity: 0.8;
+  z-index: 1;
+}
+
+/* Exercise demonstration animation: two stacked poses, hard-cut in antiphase = a clear
+   two-position loop showing the movement. */
+.exercise .media .exsvg { width: 100%; height: 100%; }
+.exsvg .floor { stroke: currentColor; stroke-width: 4; stroke-linecap: round; opacity: 0.22; }
+.exsvg .pose-a { animation: poseBlink 2.4s steps(1, end) infinite; }
+.exsvg .pose-b { animation: poseBlink 2.4s steps(1, end) infinite; animation-delay: -1.2s; }
+@keyframes poseBlink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  /* Motion reduced: hold a single still pose instead of looping. */
+  .exsvg .pose-a { animation: none; opacity: 1; }
+  .exsvg .pose-b { display: none; }
 }
 .exercise h3 { margin: 2px 0 4px; font-size: 20px; }
 .exercise .cue { margin: 0 0 4px; }
