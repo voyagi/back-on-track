@@ -185,7 +185,9 @@
 
       // ?base= and ?lang= overrides so it can be set without editing the file.
       var params = new URLSearchParams(location.search);
-      if (params.get("base")) BASE_URL = params.get("base");
+      // No ?base= URL override on purpose: a crafted link could otherwise silently repoint the
+      // printed QR codes to a hostile site. The address is still editable in the visible input
+      // box ("Update QR codes"), which the user types themselves.
       if (params.get("lang") === "nl" || params.get("lang") === "en") lang = params.get("lang");
       document.getElementById("base").value = BASE_URL;
 
