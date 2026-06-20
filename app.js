@@ -146,6 +146,9 @@
     var container = el("screen");
     container.innerHTML = "";
     screens[name](container);
+    // Show the iOS "add to home screen" tip on EVERY screen — a magnet QR lands on a section, not
+    // home — because installing is what makes the saved progress durable on iOS.
+    if (iosNeedsHint()) container.insertAdjacentHTML("afterbegin", '<div class="install-hint show">📲 ' + esc(C.ui.install.ios) + "</div>");
     Array.prototype.forEach.call(document.querySelectorAll(".tabbar a"), function (a) {
       if (a.getAttribute("data-tab") === name) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
@@ -182,7 +185,6 @@
       esc(C.ui.goalPinned.label) + '</span><br><span class="value">' + esc(goal || C.ui.goalPinned.empty) + "</span></span></a>" +
       "</section>" +
       '<div class="install-hint" id="installHint">📲 ' + esc(C.ui.install.text) + '<button id="installBtn">' + esc(C.ui.install.add) + "</button></div>" +
-      '<div class="install-hint" id="iosHint"><span>📲 ' + esc(C.ui.install.ios) + "</span></div>" +
       '<h2 class="screen-title" style="font-size:20px;color:var(--ink)">' + esc(C.ui.whatNeed) + "</h2>" +
       '<div class="tiles">' +
       tile("green", "today", "🏃", T.today.t, T.today.s) +
@@ -391,14 +393,16 @@
 
   /* ---------------- PWA install ---------------- */
   var deferredPrompt = null;
+  // iOS/iPadOS never fires beforeinstallprompt. Detect it robustly — iPadOS Safari reports a Mac
+  // user-agent, so also treat a touch-capable MacIntel as iPad — and only when not yet installed.
+  function iosNeedsHint() {
+    var ua = navigator.userAgent || "";
+    var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var standalone = ("standalone" in navigator && navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    return ios && !standalone;
+  }
   function wireInstall() {
     var hint = el("installHint"), btn = el("installBtn");
-    // iOS never fires beforeinstallprompt, so show a manual "Add to Home Screen" tip there instead
-    // (installing makes the on-device storage durable, which matters across a multi-week trial).
-    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    var standalone = ("standalone" in navigator && navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
-    var iosHint = el("iosHint");
-    if (iosHint && ios && !standalone) iosHint.classList.add("show");
     if (!hint || !btn) return;
     if (deferredPrompt) hint.classList.add("show");
     btn.addEventListener("click", function () {
