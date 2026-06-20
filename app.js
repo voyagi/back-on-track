@@ -283,9 +283,14 @@
     return { activeTotal: activeTotal, activeWeek: activeWeek, exercises: exercises, trend: trend, firstK: firstK, todayK: dateKey(0) };
   }
 
+  function feelEmoji(v) {
+    var f = v == null ? null : C.feelFaces[v];
+    return f ? f.emoji : null; // guards against an out-of-range / corrupted persisted feel value
+  }
   function feelTrendHtml(trend) {
     return '<div class="feel-trend">' + trend.map(function (v) {
-      return v == null ? '<span class="none">·</span>' : "<span>" + C.feelFaces[v].emoji + "</span>";
+      var e = feelEmoji(v);
+      return e ? "<span>" + e + "</span>" : '<span class="none">·</span>';
     }).join("") + "</div>";
   }
 
@@ -294,7 +299,7 @@
     if (state.goal) lines.push(p.goalLabel + ": " + state.goal);
     lines.push(p.activeDays + ": " + st.activeTotal + " (" + p.thisWeek + ": " + st.activeWeek + ")");
     lines.push(p.exercises + ": " + st.exercises);
-    lines.push(p.feeling + ": " + st.trend.map(function (v) { return v == null ? "-" : C.feelFaces[v].emoji; }).join(" "));
+    lines.push(p.feeling + ": " + st.trend.map(function (v) { return feelEmoji(v) || "-"; }).join(" "));
     if (st.firstK) lines.push(tpl(p.range, { from: st.firstK, to: st.todayK }));
     return lines.join("\n");
   }
