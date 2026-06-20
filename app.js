@@ -113,7 +113,7 @@
   }
 
   /* ---------------- routing ---------------- */
-  var screens = { home: renderHome, today: renderToday, learn: renderLearn, flare: renderFlare, goal: renderGoal, safety: renderSafety };
+  var screens = { home: renderHome, today: renderToday, learn: renderLearn, flare: renderFlare, goal: renderGoal, safety: renderSafety, progress: renderProgress };
 
   function currentRoute() {
     var h = (location.hash || "#/home").replace(/^#\//, "").split("?")[0];
@@ -145,7 +145,7 @@
     if (!moved) return "";
     var m = C.ui.moved;
     var base = moved === 1 ? m.one : tpl(m.many, { n: moved });
-    return '<div class="today-progress" style="margin-top:14px">👏 ' + esc(base) + esc(doneToday ? m.incToday : "") + "</div>";
+    return '<a class="today-progress" href="#/progress" style="margin-top:14px;display:block;text-decoration:none">👏 ' + esc(base) + esc(doneToday ? m.incToday : "") + "</a>";
   }
 
   function renderHome(c) {
@@ -173,6 +173,7 @@
       "</div>" +
       '<section class="checkin"><h2>' + esc(C.ui.howFeel) + '</h2><div class="faces">' + facesHtml + "</div>" +
       movedMsg(daysMovedThisWeek(), today().done.length > 0) + "</section>" +
+      '<a class="progress-link" href="#/progress">📊 ' + esc(C.ui.progress.link) + "</a>" +
       '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p>";
 
     Array.prototype.forEach.call(c.querySelectorAll(".face"), function (b) {
@@ -262,6 +263,89 @@
       '<ul class="flags">' + flags + "</ul>" +
       '<div class="action-box">' + esc(C.redFlags.action) + "</div>" +
       '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p></div>";
+  }
+
+  /* ---------------- progress (a summary the patient can share with their physio) ---------------- */
+  function progressStats() {
+    var days = state.days || {};
+    var activeTotal = 0, exercises = 0, firstK = null;
+    Object.keys(days).sort().forEach(function (k) {
+      var d = days[k];
+      if ((d.done && d.done.length > 0) || d.feel != null) { activeTotal++; if (!firstK) firstK = k; }
+      if (d.done) exercises += d.done.length;
+    });
+    var trend = [], activeWeek = 0;
+    for (var i = 6; i >= 0; i--) {
+      var dd = days[dateKey(i)];
+      if (dd && ((dd.done && dd.done.length > 0) || dd.feel != null)) activeWeek++;
+      trend.push(dd && dd.feel != null ? dd.feel : null);
+    }
+    return { activeTotal: activeTotal, activeWeek: activeWeek, exercises: exercises, trend: trend, firstK: firstK, todayK: dateKey(0) };
+  }
+
+  function feelTrendHtml(trend) {
+    return '<div class="feel-trend">' + trend.map(function (v) {
+      return v == null ? '<span class="none">·</span>' : "<span>" + C.feelFaces[v].emoji + "</span>";
+    }).join("") + "</div>";
+  }
+
+  function progressShareText(p, st) {
+    var lines = [p.shareTitle];
+    if (state.goal) lines.push(p.goalLabel + ": " + state.goal);
+    lines.push(p.activeDays + ": " + st.activeTotal + " (" + p.thisWeek + ": " + st.activeWeek + ")");
+    lines.push(p.exercises + ": " + st.exercises);
+    lines.push(p.feeling + ": " + st.trend.map(function (v) { return v == null ? "-" : C.feelFaces[v].emoji; }).join(" "));
+    if (st.firstK) lines.push(tpl(p.range, { from: st.firstK, to: st.todayK }));
+    return lines.join("\n");
+  }
+
+  function copyText(text, p) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { showToast(p.copied); }, function () { legacyCopy(text, p); });
+    } else {
+      legacyCopy(text, p);
+    }
+  }
+  function legacyCopy(text, p) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      showToast(p.copied);
+    } catch (e) {}
+  }
+
+  function renderProgress(c) {
+    var p = C.ui.progress;
+    var st = progressStats();
+    var hasData = st.activeTotal > 0 || !!state.goal;
+    var body =
+      '<div class="stat"><div class="num">' + st.activeTotal + '</div><div class="lbl">' + esc(p.activeDays) +
+      " (" + esc(p.thisWeek) + ": " + st.activeWeek + ")</div></div>" +
+      '<div class="stat"><div class="num">' + st.exercises + '</div><div class="lbl">' + esc(p.exercises) + "</div></div>" +
+      '<div class="stat"><div class="lbl" style="margin-bottom:6px">' + esc(p.feeling) + "</div>" + feelTrendHtml(st.trend) + "</div>" +
+      (state.goal ? '<div class="stat"><div class="lbl">' + esc(p.goalLabel) + '</div><div style="font-weight:700">⭐ ' + esc(state.goal) + "</div></div>" : "") +
+      (st.firstK ? '<p class="screen-intro" style="margin-top:4px">' + esc(tpl(p.range, { from: st.firstK, to: st.todayK })) + "</p>" : "");
+
+    c.innerHTML =
+      '<div class="screen" data-c="blue">' +
+      '<h2 class="screen-title">' + esc(p.title) + "</h2>" +
+      '<p class="screen-intro">' + esc(p.intro) + "</p>" +
+      (hasData ? body : '<div class="banner">' + esc(p.none) + "</div>") +
+      '<button class="share-btn" id="shareBtn">📤 ' + esc(p.share) + "</button>" +
+      '<p class="privacy-note">🔒 ' + esc(p.privacy) + "</p></div>";
+
+    el("shareBtn").addEventListener("click", function () {
+      var text = progressShareText(p, st);
+      if (navigator.share) {
+        navigator.share({ title: p.shareTitle, text: text }).catch(function (err) {
+          if (!err || err.name !== "AbortError") copyText(text, p); // real failure (not a user cancel) -> copy
+        });
+      } else {
+        copyText(text, p);
+      }
+    });
   }
 
   /* ---------------- toast ---------------- */
