@@ -20,6 +20,26 @@
   function load() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
   }
+  // Coerce persisted state into the expected shape so corrupted or tampered localStorage
+  // (wrong types, a non-array `done`, a non-numeric `feel`) degrades gracefully instead of
+  // hard-crashing the app on load or on a tap.
+  function sanitizeState(s) {
+    if (!s || typeof s !== "object" || Array.isArray(s)) s = {};
+    if (typeof s.goal === "string") s.goal = s.goal.slice(0, 80); else delete s.goal;
+    if (typeof s.lang !== "string") delete s.lang;
+    var src = s.days && typeof s.days === "object" && !Array.isArray(s.days) ? s.days : {};
+    var days = {};
+    Object.keys(src).forEach(function (k) {
+      var d = src[k];
+      if (!d || typeof d !== "object") return;
+      days[k] = {
+        done: Array.isArray(d.done) ? d.done.filter(function (x) { return typeof x === "string"; }) : [],
+        feel: typeof d.feel === "number" && isFinite(d.feel) ? d.feel : null,
+      };
+    });
+    s.days = days;
+    return s;
+  }
   function save() {
     // Guarded: Safari private mode and a full quota throw on setItem. If that happens the
     // app keeps working from in-memory state for the session instead of crashing on every save.
@@ -29,8 +49,7 @@
     var keys = Object.keys(window.CONTENT);
     return keys[(keys.indexOf(lang) + 1) % keys.length];
   }
-  var state = load();
-  if (!state.days) state.days = {};
+  var state = sanitizeState(load());
 
   /* ---------------- language ---------------- */
   function detectLang() {
@@ -250,7 +269,10 @@
     });
     el("saveGoal").addEventListener("click", function () {
       var v = el("goalInput").value.trim().slice(0, 80);
-      if (v) { state.goal = v; save(); showToast(u.saved); location.hash = "#/home"; }
+      state.goal = v; // an empty value clears the goal
+      save();
+      showToast(v ? u.saved : u.cleared);
+      location.hash = "#/home";
     });
   }
 
@@ -268,19 +290,21 @@
   /* ---------------- progress (a summary the patient can share with their physio) ---------------- */
   function progressStats() {
     var days = state.days || {};
-    var activeTotal = 0, exercises = 0, firstK = null;
+    var exerciseDaysTotal = 0, exercises = 0, firstK = null;
     Object.keys(days).sort().forEach(function (k) {
       var d = days[k];
-      if ((d.done && d.done.length > 0) || d.feel != null) { activeTotal++; if (!firstK) firstK = k; }
+      var did = d.done && d.done.length > 0;
+      if (did) exerciseDaysTotal++;
+      if ((did || d.feel != null) && !firstK) firstK = k; // range starts at the first day of any use
       if (d.done) exercises += d.done.length;
     });
-    var trend = [], activeWeek = 0;
+    var trend = [], exerciseDaysWeek = 0;
     for (var i = 6; i >= 0; i--) {
       var dd = days[dateKey(i)];
-      if (dd && ((dd.done && dd.done.length > 0) || dd.feel != null)) activeWeek++;
+      if (dd && dd.done && dd.done.length > 0) exerciseDaysWeek++;
       trend.push(dd && dd.feel != null ? dd.feel : null);
     }
-    return { activeTotal: activeTotal, activeWeek: activeWeek, exercises: exercises, trend: trend, firstK: firstK, todayK: dateKey(0) };
+    return { exerciseDaysTotal: exerciseDaysTotal, exerciseDaysWeek: exerciseDaysWeek, exercises: exercises, trend: trend, firstK: firstK, todayK: dateKey(0) };
   }
 
   function feelEmoji(v) {
@@ -297,7 +321,7 @@
   function progressShareText(p, st) {
     var lines = [p.shareTitle];
     if (state.goal) lines.push(p.goalLabel + ": " + state.goal);
-    lines.push(p.activeDays + ": " + st.activeTotal + " (" + p.thisWeek + ": " + st.activeWeek + ")");
+    lines.push(p.activeDays + ": " + st.exerciseDaysTotal + " (" + p.thisWeek + ": " + st.exerciseDaysWeek + ")");
     lines.push(p.exercises + ": " + st.exercises);
     lines.push(p.feeling + ": " + st.trend.map(function (v) { return feelEmoji(v) || "-"; }).join(" "));
     if (st.firstK) lines.push(tpl(p.range, { from: st.firstK, to: st.todayK }));
@@ -324,10 +348,10 @@
   function renderProgress(c) {
     var p = C.ui.progress;
     var st = progressStats();
-    var hasData = st.activeTotal > 0 || !!state.goal;
+    var hasData = st.exerciseDaysTotal > 0 || !!st.firstK || !!state.goal;
     var body =
-      '<div class="stat"><div class="num">' + st.activeTotal + '</div><div class="lbl">' + esc(p.activeDays) +
-      " (" + esc(p.thisWeek) + ": " + st.activeWeek + ")</div></div>" +
+      '<div class="stat"><div class="num">' + st.exerciseDaysTotal + '</div><div class="lbl">' + esc(p.activeDays) +
+      " (" + esc(p.thisWeek) + ": " + st.exerciseDaysWeek + ")</div></div>" +
       '<div class="stat"><div class="num">' + st.exercises + '</div><div class="lbl">' + esc(p.exercises) + "</div></div>" +
       '<div class="stat"><div class="lbl" style="margin-bottom:6px">' + esc(p.feeling) + "</div>" + feelTrendHtml(st.trend) + "</div>" +
       (state.goal ? '<div class="stat"><div class="lbl">' + esc(p.goalLabel) + '</div><div style="font-weight:700">⭐ ' + esc(state.goal) + "</div></div>" : "") +

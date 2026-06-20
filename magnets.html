@@ -185,7 +185,9 @@
 
       // ?base= and ?lang= overrides so it can be set without editing the file.
       var params = new URLSearchParams(location.search);
-      if (params.get("base")) BASE_URL = params.get("base");
+      var qbase = params.get("base");
+      // Only honour an http(s) override, so a crafted link cannot repoint the printed QR codes.
+      if (qbase) { try { var bu = new URL(qbase); if (bu.protocol === "https:" || bu.protocol === "http:") BASE_URL = qbase; } catch (e) {} }
       if (params.get("lang") === "nl" || params.get("lang") === "en") lang = params.get("lang");
       document.getElementById("base").value = BASE_URL;
 
