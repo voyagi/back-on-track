@@ -182,6 +182,7 @@
       esc(C.ui.goalPinned.label) + '</span><br><span class="value">' + esc(goal || C.ui.goalPinned.empty) + "</span></span></a>" +
       "</section>" +
       '<div class="install-hint" id="installHint">📲 ' + esc(C.ui.install.text) + '<button id="installBtn">' + esc(C.ui.install.add) + "</button></div>" +
+      '<div class="install-hint" id="iosHint"><span>📲 ' + esc(C.ui.install.ios) + "</span></div>" +
       '<h2 class="screen-title" style="font-size:20px;color:var(--ink)">' + esc(C.ui.whatNeed) + "</h2>" +
       '<div class="tiles">' +
       tile("green", "today", "🏃", T.today.t, T.today.s) +
@@ -284,6 +285,7 @@
       '<p class="screen-intro">' + esc(C.redFlags.intro) + "</p>" +
       '<ul class="flags">' + flags + "</ul>" +
       '<div class="action-box">' + esc(C.redFlags.action) + "</div>" +
+      '<p class="screen-intro" style="margin-top:12px">' + esc(C.redFlags.cantCatch) + "</p>" +
       '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p></div>";
   }
 
@@ -391,6 +393,12 @@
   var deferredPrompt = null;
   function wireInstall() {
     var hint = el("installHint"), btn = el("installBtn");
+    // iOS never fires beforeinstallprompt, so show a manual "Add to Home Screen" tip there instead
+    // (installing makes the on-device storage durable, which matters across a multi-week trial).
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var standalone = ("standalone" in navigator && navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    var iosHint = el("iosHint");
+    if (iosHint && ios && !standalone) iosHint.classList.add("show");
     if (!hint || !btn) return;
     if (deferredPrompt) hint.classList.add("show");
     btn.addEventListener("click", function () {
@@ -420,6 +428,9 @@
       var magnetMsg = C.ui.toastMagnet; // capture by value so a fast language toggle can't swap it
       setTimeout(function () { showToast(magnetMsg); }, 500);
     }
+    // Ask the browser to keep our on-device data (resists storage eviction). Chrome/Firefox
+    // honour this; Safari ignores it (there, installing to the home screen is the durable path).
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
     if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
       navigator.serviceWorker.register("sw.js").catch(function () {});
     }
