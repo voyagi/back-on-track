@@ -146,6 +146,9 @@
     var container = el("screen");
     container.innerHTML = "";
     screens[name](container);
+    // Show the iOS "add to home screen" tip on EVERY screen — a magnet QR lands on a section, not
+    // home — because installing is what makes the saved progress durable on iOS.
+    if (iosNeedsHint()) container.insertAdjacentHTML("afterbegin", '<div class="install-hint show">📲 ' + esc(C.ui.install.ios) + "</div>");
     Array.prototype.forEach.call(document.querySelectorAll(".tabbar a"), function (a) {
       if (a.getAttribute("data-tab") === name) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
@@ -284,6 +287,7 @@
       '<p class="screen-intro">' + esc(C.redFlags.intro) + "</p>" +
       '<ul class="flags">' + flags + "</ul>" +
       '<div class="action-box">' + esc(C.redFlags.action) + "</div>" +
+      '<p class="screen-intro" style="margin-top:12px">' + esc(C.redFlags.cantCatch) + "</p>" +
       '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p></div>";
   }
 
@@ -389,6 +393,14 @@
 
   /* ---------------- PWA install ---------------- */
   var deferredPrompt = null;
+  // iOS/iPadOS never fires beforeinstallprompt. Detect it robustly — iPadOS Safari reports a Mac
+  // user-agent, so also treat a touch-capable MacIntel as iPad — and only when not yet installed.
+  function iosNeedsHint() {
+    var ua = navigator.userAgent || "";
+    var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var standalone = ("standalone" in navigator && navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    return ios && !standalone;
+  }
   function wireInstall() {
     var hint = el("installHint"), btn = el("installBtn");
     if (!hint || !btn) return;
@@ -420,6 +432,9 @@
       var magnetMsg = C.ui.toastMagnet; // capture by value so a fast language toggle can't swap it
       setTimeout(function () { showToast(magnetMsg); }, 500);
     }
+    // Ask the browser to keep our on-device data (resists storage eviction). Chrome/Firefox
+    // honour this; Safari ignores it (there, installing to the home screen is the durable path).
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
     if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
       navigator.serviceWorker.register("sw.js").catch(function () {});
     }
