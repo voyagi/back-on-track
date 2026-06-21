@@ -134,6 +134,7 @@ vendor/qrcode.js      QR generator (MIT, Kazuhiko Arase) — used only by magnet
 tools/serve.cjs       tiny local preview server
 CLINICAL-BASIS.md     evidence basis + citations for the clinical content
 LEARNING-OUTCOMES.md  how the toolkit maps to the 6 Module 7 outcomes
+PATIENT.md            example patient (invented) the toolkit is designed for
 TESTING.md            real-world tests to run yourself (print, phone, clinical)
 ```
 
