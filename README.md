@@ -1,4 +1,4 @@
-# Back on Track — a self-management toolkit for chronic low back pain
+# Back on Track — a self-management toolkit for older adults with chronic low back pain
 
 A student toolkit for **Module 7**. It has two halves that work together:
 
@@ -8,12 +8,14 @@ A student toolkit for **Module 7**. It has two halves that work together:
    opens its matching section of the app. The physical half of the toolkit, and the
    everyday "front door" into the app.
 
-The toolkit is built for a **specific target group**: adults with chronic non-specific
-low back pain, including people with **lower health literacy**. Every design choice below
-is made for that group.
+The toolkit is built for a **specific target group**: **older adults (65+) with long-term low
+back pain who avoid moving for fear of doing harm**. That fear leads to less activity, weaker
+muscles, and a real risk of **losing their independence** — the specific problem this toolkit
+tackles. Every design choice below is for them, lower health literacy included.
 
-> **Disclaimer shown in the app:** This app helps you look after your back. It does not
-> replace advice from your own physiotherapist or doctor.
+> **Disclaimer shown in the app:** This app is for older adults with long-term back pain who
+> worry that moving will cause harm, after a clinician has checked it. It supports, but does not
+> replace, your physiotherapist or doctor.
 
 ---
 
