@@ -21,6 +21,8 @@ authority.
 - **WalkBack trial** (Pocovi et al., *The Lancet* 2024) — walking + education for recurrence prevention.
 - Core-stability / motor-control exercise reviews; pain-science "validation gap" literature (2025).
 
+**Spot-checked (2026-06-20):** the WalkBack trial (Lancet 2024, Pocovi et al.), the NICE 2023 cauda-equina red flags (difficulty initiating micturition, saddle anaesthesia), the Downie 2013 *BMJ* red-flag review (10.1136/bmj.f7095), and the KNGF 2021 guideline (STarT Back risk stratification, shared decision-making) were each confirmed to exist and to say what is claimed here. Still verify each yourself before citing it in your LO1.
+
 ## Exercises — verdict: sound, with progression added
 
 All six are standard, low-risk, evidence-based first-line self-management movements for chronic

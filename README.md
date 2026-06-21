@@ -130,4 +130,23 @@ icon.svg / icon-*.png app icons (SVG + 180/192/512 PNG for iOS/Android)
 magnets.html          printable 5-magnet sheet, English or Dutch
 vendor/qrcode.js      QR generator (MIT, Kazuhiko Arase) — used only by magnets.html
 tools/serve.cjs       tiny local preview server
+CLINICAL-BASIS.md     evidence basis + citations for the clinical content
+LEARNING-OUTCOMES.md  how the toolkit maps to the 6 Module 7 outcomes
+TESTING.md            real-world tests to run yourself (print, phone, clinical)
 ```
+
+## Gotchas for future edits
+
+Non-obvious invariants that will bite a cold reader (or a future you):
+
+- **Exercise ids must match in three places:** `content.js` `exercises[].id`, the keys in
+  `exercise-anim.js`, and `flare.gentleRoutine`. A mismatch silently drops an animation or a
+  flare-routine card.
+- **`content.js` `en` and `nl` must stay structurally identical** (same keys). A key in one language
+  but missing in the other renders the literal word "undefined" on screen.
+- **Bump `CACHE` in `sw.js`** (`bot-v10` → `bot-v11` …) whenever you change any cached file, or
+  returning users keep the old version from the service-worker cache.
+- **The app is intentionally one file (`app.js`)** — small enough that splitting adds more friction
+  than it removes. The `/* ---- section ---- */` banners are the map.
+- **`magnets.html` has no `?base=` URL override** (removed for safety); change the live address in
+  the file or via the on-screen input box.
