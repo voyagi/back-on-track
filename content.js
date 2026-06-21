@@ -13,7 +13,7 @@ window.CONTENT = {
   en: {
     ui: {
       brand: "Back on Track",
-      tagline: "Look after your back, your way.",
+      tagline: "Move with confidence, stay independent.",
       hello: "Hello",
       whatNeed: "What do you need?",
       howFeel: "How is your back today?",
@@ -35,7 +35,7 @@ window.CONTENT = {
       goalPinned: { label: "My goal", empty: "Tap to set the reason you are doing this" },
       today: {
         title: "Move a little, often",
-        intro: "Gentle is good. Do what you can today, even a few movements help. When one feels easy, do a few more.",
+        intro: "Gentle is good. Do what you can today, even a few movements help. Hold a chair if you feel unsteady, and use a bed if the floor is hard. When one feels easy, do a few more.",
         progress: "{d} of {t} done today",
         complete: " 🎉 nice work!",
         markDone: "Mark as done",
@@ -73,7 +73,7 @@ window.CONTENT = {
       },
       toastMagnet: "Opened from your magnet ✓",
       disclaimer:
-        "This app is for ongoing back pain that a clinician has checked. It supports, but does not replace, your physiotherapist or doctor. If you feel worse or worried, talk to them.",
+        "This app is for older adults with long-term back pain who worry that moving will cause harm, after a clinician has checked it. It supports, but does not replace, your physiotherapist or doctor. If you feel worse or worried, talk to them.",
       langName: "EN",
       switchTitle: "Schakel naar Nederlands",
     },
@@ -82,11 +82,12 @@ window.CONTENT = {
       { id: "knee-to-chest", name: "Knee to chest", cue: "Lie down. Pull one knee gently toward your chest. Hold for a breath, then swap. Stop if pain spreads down your leg.", reps: "5 each leg", why: "Eases tight muscles in your low back." },
       { id: "cat-camel", name: "Cat and camel", cue: "On hands and knees, slowly arch your back up like a cat, then let it dip down.", reps: "10 slow times", why: "Helps your back move freely." },
       { id: "glute-bridge", name: "Bridge", cue: "Lie on your back, knees bent. Lift your hips up, squeeze, then lower slowly.", reps: "10 times", why: "Builds strong hip and back muscles." },
-      { id: "bird-dog", name: "Bird dog", cue: "On hands and knees, reach one arm forward and the opposite leg back. Hold, then swap.", reps: "5 each side", why: "Teaches your back to stay steady." },
+      { id: "bird-dog", name: "Bird dog", cue: "On hands and knees, reach one arm forward and the opposite leg back. Hold, then swap. Too hard? Move just the arm, or just the leg.", reps: "5 each side", why: "Teaches your back to stay steady." },
       { id: "walk", name: "Go for a walk", cue: "A short, easy walk. Start with what feels okay and build up a little each week.", reps: "5 to 10 minutes", why: "Walking is one of the best things for your back." },
     ],
     lessons: [
       { id: "hurt-harm", title: "Hurt isn't harm", body: "Your pain is real. But pain is your body's alarm, and an alarm can be too sensitive. Hurting does not always mean new damage. A sore back can still be a strong, healthy back." },
+      { id: "fear-less", title: "Less fear, more life", body: "When back pain makes you afraid to move, you do less, and your back and legs get weaker. Everyday things get harder and your world gets smaller. Gentle movement, a little at a time, breaks this cycle and helps you stay independent." },
       { id: "strong-back", title: "Your back is strong", body: "Your spine is one of the strongest parts of your body. It is built to bend, lift and move every day." },
       { id: "movement-medicine", title: "Movement is medicine", body: "Moving gently feeds your back and helps it settle. Start small and build up slowly, pace yourself and do not push through sharp pain. Resting too long can make pain last longer." },
       { id: "more-than-back", title: "More than your back", body: "Poor sleep, stress and worry can turn the pain up. This is not your fault and the pain is not imaginary. Good sleep, calm and staying active can turn it down." },
@@ -119,7 +120,7 @@ window.CONTENT = {
       action: "If you have a bladder or bowel problem, numbness between your legs, leg weakness, or sudden tearing pain, treat it as an emergency: call 112 or the out-of-hours GP (huisartsenpost) now. For the other signs, see your GP (huisarts) soon.",
       cantCatch: "This list cannot catch everything. If something feels seriously wrong, get checked anyway. And even without these signs, see your GP if your back pain does not improve in about 6 weeks or keeps getting worse.",
     },
-    goalPrompts: ["Play with my grandchildren", "Sleep through the night", "Walk to the shops and back", "Get back to gardening", "Sit through a whole film", "Return to my work"],
+    goalPrompts: ["Play with my grandchildren", "Walk to the shops on my own", "Get up from my chair easily", "Get back to gardening", "Sleep through the night", "Keep living in my own home"],
     feelFaces: [
       { value: 0, emoji: "😖", label: "Awful" },
       { value: 1, emoji: "🙁", label: "Sore" },
@@ -132,7 +133,7 @@ window.CONTENT = {
   nl: {
     ui: {
       brand: "Back on Track",
-      tagline: "Zorg voor je rug, op jouw manier.",
+      tagline: "Beweeg met vertrouwen, blijf zelfstandig.",
       hello: "Hallo",
       whatNeed: "Wat heb je nodig?",
       howFeel: "Hoe gaat het met je rug vandaag?",
@@ -154,7 +155,7 @@ window.CONTENT = {
       goalPinned: { label: "Mijn doel", empty: "Tik om in te stellen waarom je dit doet" },
       today: {
         title: "Beweeg een beetje, vaak",
-        intro: "Rustig is goed. Doe wat je vandaag kunt, ook een paar bewegingen helpen. Als iets makkelijk voelt, doe er dan een paar meer.",
+        intro: "Rustig is goed. Doe wat je vandaag kunt, ook een paar bewegingen helpen. Houd een stoel vast als je je onzeker voelt, en gebruik een bed als de vloer lastig is. Als iets makkelijk voelt, doe er dan een paar meer.",
         progress: "{d} van {t} gedaan vandaag",
         complete: " 🎉 goed gedaan!",
         markDone: "Markeer als gedaan",
@@ -192,7 +193,7 @@ window.CONTENT = {
       },
       toastMagnet: "Geopend via je magneet ✓",
       disclaimer:
-        "Deze app is voor langdurige rugpijn die een zorgverlener heeft nagekeken. Hij ondersteunt je fysiotherapeut of dokter, maar vervangt hen niet. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
+        "Deze app is voor oudere mensen met langdurige rugpijn die bang zijn dat bewegen schade veroorzaakt, nadat een zorgverlener het heeft nagekeken. Hij ondersteunt je fysiotherapeut of dokter, maar vervangt hen niet. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
       langName: "NL",
       switchTitle: "Switch to English",
     },
@@ -201,11 +202,12 @@ window.CONTENT = {
       { id: "knee-to-chest", name: "Knie naar borst", cue: "Lig op je rug. Trek één knie zachtjes naar je borst. Houd even vast, wissel dan. Stop als de pijn verder je been in trekt.", reps: "5 per been", why: "Ontspant strakke spieren in je onderrug." },
       { id: "cat-camel", name: "Kat en kameel", cue: "Op handen en knieën: maak langzaam een bolle rug omhoog, laat hem dan zakken.", reps: "10 keer rustig", why: "Helpt je rug soepel te bewegen." },
       { id: "glute-bridge", name: "Bruggetje", cue: "Lig op je rug, knieën gebogen. Til je heupen op, knijp, en zak langzaam terug.", reps: "10 keer", why: "Bouwt sterke heup- en rugspieren op." },
-      { id: "bird-dog", name: "Vogelhond", cue: "Op handen en knieën: strek één arm naar voren en het andere been naar achteren. Houd vast, wissel dan.", reps: "5 per kant", why: "Leert je rug stabiel te blijven." },
+      { id: "bird-dog", name: "Vogelhond", cue: "Op handen en knieën: strek één arm naar voren en het andere been naar achteren. Houd vast, wissel dan. Te moeilijk? Beweeg alleen de arm, of alleen het been.", reps: "5 per kant", why: "Leert je rug stabiel te blijven." },
       { id: "walk", name: "Maak een wandeling", cue: "Een korte, rustige wandeling. Begin met wat goed voelt en bouw langzaam op.", reps: "5 tot 10 minuten", why: "Wandelen is een van de beste dingen voor je rug." },
     ],
     lessons: [
       { id: "hurt-harm", title: "Pijn is geen schade", body: "Je pijn is echt. Maar pijn is het alarm van je lichaam, en een alarm kan te gevoelig zijn. Pijn betekent niet altijd nieuwe schade. Een pijnlijke rug kan nog steeds een sterke, gezonde rug zijn." },
+      { id: "fear-less", title: "Minder angst, meer leven", body: "Als rugpijn je bang maakt om te bewegen, doe je minder en worden je rug en benen zwakker. Dagelijkse dingen worden moeilijker en je wereld wordt kleiner. Rustig bewegen, beetje bij beetje, doorbreekt deze cirkel en helpt je zelfstandig te blijven." },
       { id: "strong-back", title: "Je rug is sterk", body: "Je ruggengraat is een van de sterkste delen van je lichaam. Hij is gemaakt om te buigen, tillen en bewegen." },
       { id: "movement-medicine", title: "Bewegen is medicijn", body: "Rustig bewegen voedt je rug en helpt hem tot rust te komen. Begin klein en bouw langzaam op, doseer en ga niet door felle pijn heen. Te lang rusten kan de pijn juist langer laten duren." },
       { id: "more-than-back", title: "Meer dan je rug", body: "Slecht slapen, stress en zorgen kunnen je pijn versterken. Dit is niet jouw schuld en de pijn is niet ingebeeld. Goede slaap, rust en bewegen kunnen hem verminderen." },
@@ -238,7 +240,7 @@ window.CONTENT = {
       action: "Heb je een probleem met plassen of ontlasting, een doof gevoel tussen je benen, zwakte in een been, of plotselinge scheurende pijn? Behandel dat als een noodgeval: bel 112 of de huisartsenpost nu. Bij de andere signalen: ga snel naar je huisarts.",
       cantCatch: "Deze lijst kan niet alles vangen. Voelt er iets ernstig mis? Laat je dan toch nakijken. En ook zonder deze signalen: ga naar je huisarts als je rugpijn na ongeveer 6 weken niet beter is of steeds erger wordt.",
     },
-    goalPrompts: ["Spelen met mijn kleinkinderen", "Doorslapen 's nachts", "Naar de winkel lopen en terug", "Weer kunnen tuinieren", "Een hele film uitzitten", "Terug naar mijn werk"],
+    goalPrompts: ["Spelen met mijn kleinkinderen", "Zelf naar de winkel lopen", "Makkelijk uit mijn stoel opstaan", "Weer kunnen tuinieren", "Doorslapen 's nachts", "Zelfstandig in mijn eigen huis blijven wonen"],
     feelFaces: [
       { value: 0, emoji: "😖", label: "Slecht" },
       { value: 1, emoji: "🙁", label: "Pijnlijk" },

@@ -11,8 +11,9 @@ deliver them by itself. This is an honest map, not a claim that one app satisfie
 
 This is what the toolkit **is**.
 
-- **Specific target group:** adults with chronic non-specific low back pain, including lower
-  health literacy.
+- **Specific target group:** older adults (65+) with long-term low back pain who avoid moving for
+  fear of doing harm — a fear that drives inactivity and loss of independence (lower health
+  literacy considered throughout).
 - **Innovative, well-considered:** an offline installable web app paired with five colour-coded
   QR fridge magnets (the physical half).
 - **Time- and location-independent:** works offline, installs to the home screen, and the magnets

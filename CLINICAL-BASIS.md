@@ -12,6 +12,13 @@ rely on this or cite it in your LO1 literature study, verify each source yoursel
 tutor or qualified physiotherapist confirm the content.** Treat this as a head start, not an
 authority.
 
+## Target group
+
+Older adults (65+) with long-term low back pain whose main problem is **fear of movement**
+(kinesiophobia), which drives inactivity, deconditioning, and loss of independence. Reframing pain
+through education plus gradually-progressed gentle activity is the guideline-endorsed approach to
+fear-avoidance, so the toolkit's content is well-matched to this group.
+
 ## Guidelines and sources referenced
 
 - **KNGF-richtlijn Lage rugpijn en LRS (2021)** — the Dutch physiotherapy guideline (most relevant for Fontys).
