@@ -4,6 +4,7 @@ node_modules/
 Thumbs.db
 .claude/
 
-# Real patient notes — never publish identifiable patient details to this public repo.
-# Keep them in a local *.local.md file (git-ignored) and in your private hand-in only.
-*.local.md
+# Real patient notes / hand-in documents — never publish identifiable patient
+# details to this public repo. Keep them in local *.local.* files (git-ignored:
+# .local.md, .local.docx, .local.pdf) and in your private hand-in only.
+*.local.*
