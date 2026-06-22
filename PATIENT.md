@@ -1,118 +1,78 @@
-# Example patient — Greet de Vries (72)
+# Target patient profile
 
-> **This is an invented patient**, written to represent the toolkit's target group so you can
-> design, explain, and present around a concrete person. For the actual Module 7 assessment you
-> still need to recruit a **real** patient who fits this profile — use this case to know who to
-> look for and what to ask. Greet is a composite, not a real individual.
+This describes the **kind of patient the toolkit is built for**, so the design can be explained and
+presented around a concrete person. It is **de-identified on purpose**: this repository is public,
+so it must not contain real, identifying details about an actual patient.
 
----
-
-## Who she is
-
-Greet de Vries is **72 years old**. She is a widow and lives alone in a small terraced house in
-Eindhoven. Her husband died three years ago. She has one daughter, Linda, who lives about 30
-minutes away and helps when she can — but Greet hates feeling like a burden. She left school at 15,
-worked in shop and cleaning jobs, and now lives on her **AOW state pension** with little to spare.
-Dutch is her only language.
-
-## Her back problem
-
-Greet has had low back pain **on and off for about eight months**. There was no fall or accident —
-it crept up on her. About six months ago she "did too much" in the garden and had a **bad flare-up
-that frightened her**. Since then the pain comes and goes but never fully leaves.
-
-Her GP examined her, found nothing dangerous (no leg weakness, no bladder or bowel problems, no
-weight loss, no night pain), and explained it as ordinary **long-term, non-specific low back pain**.
-He referred her to a physiotherapist. So she sits squarely inside this toolkit's scope: *a clinician
-has checked her, and there are no red flags.*
-
-## The real problem: she is afraid to move
-
-Since the flare, Greet is convinced that bending, lifting, or "overdoing it" will **damage her back
-for good** — "slip a disc" or "wear it out." So she has slowly stopped:
-
-- **gardening**, which she loved,
-- **walking to the Wednesday market** (she now asks Linda to bring her shopping),
-- bending down, getting on the floor, or carrying anything.
-
-She rests a lot and moves stiffly and carefully. As a result her **legs have got weaker**, she
-gets short of breath, and she now **struggles to get up from her armchair**. She has started to
-**fear falling**. Her world has quietly got smaller.
-
-This is **fear-avoidance** (kinesiophobia): the fear, not new damage, is what keeps her stuck.
-
-## What it is doing to her life
-
-Greet's biggest fear is not the pain itself — it is **losing her independence**, "ending up in a
-home." She misses her garden and her market walk. She feels low, goes out less, and sees fewer
-people. She is caught in a cycle:
-
-> **pain → fear → less movement → weaker body → more pain and less confidence → even less movement**
-
-Breaking that cycle is exactly what the toolkit is for.
-
-## Why ordinary advice has not reached her
-
-- **Low health literacy.** Leaflets full of medical words confuse her. She nods along at
-  appointments but does not really take it in.
-- **Low digital confidence.** Linda set up a smartphone; Greet only uses WhatsApp and phone calls,
-  and distrusts "all those apps."
-- **Tight money and time.** She will not pay for a long course of appointments.
-
-## Clinical snapshot (for your reasoning and report)
-
-| Item | Greet |
-|---|---|
-| Complaint | Chronic non-specific low back pain, > 3 months, recurrent, mechanical pattern |
-| Red flags | **Screened and absent** — no cauda equina signs, no significant trauma, no cancer history, no fever or unexplained weight loss, no relentless night pain |
-| Main driver | **Strong fear-avoidance / kinesiophobia** maintaining disability (a higher-risk picture on a tool like STarT Back) |
-| Guideline fit | KNGF 2021 and NICE NG59 say: target this with **reassurance, education, and graded activity**, not passive treatment or rest |
-| Deconditioning | Reduced walking tolerance, difficulty rising from a chair, fear of falling |
-| Mood | Low mood and social withdrawal secondary to the above |
-
-**The "abnormal course" angle (useful for LO3):** her pain has **outlasted normal tissue healing**
-and is being kept going by fear and deconditioning, not by ongoing damage. The physiotherapist's
-role is to reassure, re-activate her gradually, and stay alert to the **red flags** that would mean
-stepping outside self-management and referring on. The toolkit makes those boundaries explicit.
-
-## Her goal (in her own words)
-
-> "I want to tend my own garden again and walk to the market on my own."
-
-## Why this toolkit fits Greet specifically
-
-| Greet's barrier | How the toolkit answers it |
-|---|---|
-| Believes hurting = harming | The **"Hurt isn't harm"** and new **"Less fear, more life"** cards name and break the fear |
-| Low health literacy | Plain language, big text, one idea per line, animated demos instead of jargon |
-| Distrusts apps, low digital skill | **Five fridge magnets** — physical, no phone needed, just read or scan |
-| Dutch only | Fully **bilingual**, switches to Dutch with one tap |
-| Afraid of falling, can't get to the floor | "**Hold a chair if unsteady, use a bed if the floor is hard**"; an easier bird-dog |
-| Wants her independence back | Goal-setting around her real life ("keep living in my own home", "walk to the shops on my own") |
-| Few appointments, tight budget | Works **anywhere, offline, free**; she shows the physio her progress at the next visit |
-
-## How you would use it with her (the trial)
-
-1. **At the appointment:** set it up together — install the app or put the magnets on her fridge —
-   and pick her goal ("tend my garden again").
-2. **Explain the key idea:** walk through "Less fear, more life" and "Hurt isn't harm", and try one
-   or two gentle exercises using the chair/bed options so she feels safe.
-3. **At home for a few weeks:** the magnets are her daily reminder; she does a little, often.
-4. **Next visit:** she shares her progress summary with you, and you reflect together on what
-   changed — her activity, her confidence, and her feeling trend.
-
-## What to measure (so you can show it worked)
-
-- **Activity:** exercise days per week (the app's progress view), and whether she has restarted
-  her walk or her garden.
-- **Fear / confidence:** a simple before/after — e.g. a short fear-of-movement question, or just
-  "how sure are you that moving is safe for your back?" on a 0–10 scale.
-- **Her goal:** is she closer to it? Can she get up from the chair more easily, walk further?
-- **Usability:** did she actually use it, and which half (app vs magnets) did she lean on? This
-  feeds the LO2 "evaluate two or more formats" criterion.
+> **For the assignment:** trial the toolkit with a **real** patient who fits this profile — for
+> example an older relative who agrees to take part. Keep that person's real details in your private
+> hand-in (and, if you want a working copy in this project, in a local `*.local.md` file, which is
+> git-ignored and never published). **Never put a real patient's personal or health details in this
+> public repo.**
 
 ---
 
-*Greet is invented to represent the target group and to anchor the toolkit's design and your
-presentation. Recruit a real patient who fits this profile for the actual trial and for the
-above-level "applied in practice" evidence.*
+## The patient this is for
+
+An older adult — roughly **85 to 90** — with **long-term low back pain**, who has become **afraid to
+move and afraid of falling**. They live in their **own home with family helping**, and what matters
+most to them is **staying independent there** rather than moving into care. They are not a confident
+smartphone user, so the physical magnets matter as much as the app.
+
+## The problem it solves
+
+Because of the pain — and the fear of falling — this patient avoids moving, which starts a downward
+cycle:
+
+> **pain + fear of falling → less movement → weaker legs and worse balance → higher fall risk and
+> more pain → even less movement**
+
+The less they move, the weaker and less steady they get, which makes both the pain and the fall risk
+worse, and brings closer the day they can no longer manage at home. Breaking that cycle is the point
+of the toolkit.
+
+## Why the toolkit fits this patient
+
+| Their situation | How the toolkit helps |
+|---|---|
+| Afraid that moving will harm the back | The "Hurt isn't harm" and "Less fear, more life" cards address the fear directly |
+| Fear of falling, unsteady | "Hold a chair if unsteady, use a bed if the floor is hard"; gentler exercise options |
+| Not a confident app user | The **fridge magnets** need no phone — a daily, physical reminder |
+| Family is involved in care | A relative can set it up and do the exercises *with* them |
+| Wants to stay in their own home | Goals and education are built around independence, not just pain |
+
+## Clinical note (especially in the over-85s)
+
+- **Red flags must be cleared by a clinician first.** Older bones fracture more easily, so new or
+  changed back pain deserves a proper check. The app's red **"When to get checked"** screen lists the
+  warning signs, but it is a backup, not a substitute.
+- **Choose the safest exercises.** Getting down to the floor may not be wise. Favour the pelvic tilt
+  and knee-to-chest done **on a bed**, very short walks **with support**, and skip anything unsafe —
+  ideally checked with a physiotherapist.
+
+This picture — fear of movement and falling, with deconditioning — is what geriatric physiotherapy
+and the guidelines treat with **reassurance, gentle graded activity, and rebuilding confidence**,
+not rest. That is what the toolkit delivers.
+
+## What to measure (to show whether it helped)
+
+- **Movement:** are they doing the gentle exercises and moving around the house a little more?
+- **Confidence / fear:** before vs after — "how worried are you that moving will hurt your back?"
+  and "how afraid are you of falling?" on a simple 0–10 scale.
+- **Their goal:** are they closer to it (steadier on their feet, getting around more easily)?
+- **Which format they used:** the app, the magnets, or both — useful for the LO2 "evaluate two or
+  more formats" point.
+
+## Using it with a real patient (the trial)
+
+1. **Sit with them** and set it up together — magnets on the fridge, the app if they want it — and
+   agree their goal.
+2. **Talk through the fear** using "Less fear, more life" and "Hurt isn't harm," then try one or two
+   safe, gentle exercises together so they feel secure.
+3. **Over a few weeks**, with family help, they do a little, often; the magnets are the daily nudge.
+4. **Check back in** and note what changed — movement, steadiness, confidence — for the assignment.
+
+---
+
+*Keep the real person behind this profile anonymous in anything public. Get their consent, use only
+their initials in the hand-in, and store their real details privately — not in this repository.*
