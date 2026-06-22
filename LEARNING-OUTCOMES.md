@@ -1,92 +1,65 @@
-# How the toolkit maps to the Module 7 learning outcomes
+# Learning Outcomes Map
 
-The toolkit is primarily a **Learning Outcome 2** deliverable. It supports LO1 and touches LO3.
-LO4, LO5 and LO6 are your own activities — the toolkit can be their *context*, but it does not
-deliver them by itself. This is an honest map, not a claim that one app satisfies all six.
+This file maps Back on Track to the Module 7 learning outcomes. It is deliberately honest about what the toolkit proves and what still needs separate student work.
 
-## LO2 — inform a target group about self-management (PRIMARY, strong)
+## LO2
 
-> *Informs a specific target group, time- and location-independent, socio-economic and cultural
-> context, self-regulation, quality of life.*
+Back on Track mainly supports LO2: informing a specific target group about self-management in a way that is time and location independent.
 
-This is what the toolkit **is**.
+Evidence in the toolkit:
 
-- **Specific target group:** older adults (65+) with long-term low back pain who avoid moving for
-  fear of doing harm — a fear that drives inactivity and loss of independence (lower health
-  literacy considered throughout).
-- **Innovative, well-considered:** an offline installable web app paired with five colour-coded
-  QR fridge magnets (the physical half).
-- **Time- and location-independent:** works offline, installs to the home screen, and the magnets
-  work with no phone at all.
-- **Socio-economic / cultural context:** health-literacy-first design (video-first, plain language,
-  big targets), bilingual English/Dutch, real Dutch care routes (huisarts, huisartsenpost, 112).
-- **Self-regulation / self-management:** daily exercises, a flare-up plan, pain education, a personal
-  goal, and a progress view.
-- **Quality of life:** the goal-setting is framed around getting back to what matters to the patient.
+- Specific target group: older adults with ongoing low back pain and fear of movement.
+- Socio-economic and cultural fit: plain language, large controls, no account, English and Dutch.
+- Time and place independence: offline PWA plus fridge magnets.
+- Self-management: daily movement, flare-up plan, goal setting, progress sharing, and safety guidance.
+- Quality of life: the goal screen frames activity around independence and what matters to the person.
 
-**For above expected level:** trial it with a real patient (the "applied in practice" criterion)
-and offer two or more formats (the app, the magnets, a plain leaflet), evaluating which suits whom.
-The bilingual option and the magnet/app pairing already give you two formats.
+For above expected level, trial the app and magnets with a real patient, compare the formats, and record what changed.
 
-## LO1 — literature study + EBP + instruct peers (SUPPORTED)
+## LO1
 
-> *Conducts literature studies, EBP (Ask / Acquire / Appraise / Apply / Audit), instructs peers.*
+The toolkit supports LO1 by giving a concrete product to connect to the literature study.
 
-`CLINICAL-BASIS.md` is the evidence backbone you build the literature study on, and it maps to the
-five A's:
+Use `CLINICAL-BASIS.md` as a source map, then verify and appraise the original references yourself. The app should not be cited as evidence. The original literature should be cited.
 
-- **Ask** — the clinical question (how should this group self-manage chronic low back pain?).
-- **Acquire** — the guideline search (KNGF 2021, NICE NG59, GLA:D Back, WalkBack 2024, Downie 2013).
-- **Appraise** — `CLINICAL-BASIS.md` assesses each exercise, red flag, and message against those.
-- **Apply** — the toolkit itself, used with a real patient.
-- **Audit** — the in-app progress summary lets you measure and reflect on use.
+The EBP flow is:
 
-**You still do:** write the actual literature study (appraise the articles yourself, do not cite
-`CLINICAL-BASIS.md` as the source — verify each reference), and instruct peers on it. For above
-level, actually carry out the Apply + Audit steps and have peers evaluate the result with explicit
-didactic structure.
+- Ask: how should this target group self-manage chronic low back pain?
+- Acquire: guidelines and trials on low back pain, pain education, graded activity, walking, and red flags.
+- Appraise: judge quality and fit for an older low-literacy user.
+- Apply: test the toolkit with a real patient.
+- Audit: use the progress summary and patient feedback to evaluate use.
 
-## LO3 — role of the physiotherapist, boundaries, inform stakeholders (TOUCHED)
+## LO3
 
-> *Evaluates the role of the physiotherapist with an abnormal course and informs stakeholders.*
+The red safety screen supports LO3 by showing boundaries:
 
-- The red **"When to get checked"** screen shows the **boundaries of the profession**: when
-  self-management is not enough and the patient must escalate (emergency vs. GP), with the real
-  Dutch routes.
-- The scope statement ("supports, but does not replace, your physiotherapist or doctor") and the
-  disclaimer **inform the patient (a stakeholder)** about what the tool is and is not for.
+- When self-management is not enough.
+- When emergency care is needed.
+- When GP review is needed.
+- Why the tool supports but does not replace a clinician.
 
-**You still do:** the actual evaluation of an abnormal-course case and informing other stakeholders
-is your clinical reasoning; the toolkit demonstrates the awareness, not the case.
+The student's clinical reasoning for an abnormal course still needs to be written separately.
 
-## LO4 — methodical EBP across the three domains (NOT delivered by the toolkit)
+## LO4
 
-> *EBP, methodical, three physiotherapy domains, abnormal course (intake / diagnosis / treatment).*
+The toolkit does not deliver LO4 by itself. It is focused on one musculoskeletal self-management case, not a full methodical process across three domains.
 
-The toolkit lives in **one** domain (musculoskeletal / low back pain) and is a self-management aid,
-not a full intake-diagnosis-treatment process across three domains. This LO is your own clinical
-casework. The toolkit is not evidence for it.
+## LO5
 
-## LO5 — reflect on peers, constructive feedback (NOT delivered by the toolkit)
+The toolkit can be used as the object of a peer-feedback session, but the reflection and feedback evidence must come from the student's own activity.
 
-> *Reflects on peers and provides constructive feedback.*
+## LO6
 
-Your own activity. The toolkit can be the **object** of a peer-feedback session (present it, give and
-receive structured feedback linked to a feedback question), but the reflection is yours.
+The toolkit can demonstrate responsibility through privacy, safety wording, accessibility, and patient fit. The professional attitude evidence still comes from the student's own conduct and reflection.
 
-## LO6 — professional attitude (NOT delivered by the toolkit)
+## Suggested Evidence Package
 
-> *Professional attitude, respect, responsibility.*
+Use the following artifacts:
 
-Your own conduct across the module. Not something an artifact can demonstrate.
-
-## Summary
-
-| LO | Coverage | What the toolkit gives you | What is still yours |
-|----|----------|----------------------------|---------------------|
-| LO2 | Strong (primary) | The whole app + magnets | Trial with a real patient; evaluate the formats |
-| LO1 | Supported | `CLINICAL-BASIS.md` evidence + the 5 A's structure | Write + appraise the literature study; instruct peers |
-| LO3 | Touched | Red-flag boundaries + scope statement | The abnormal-course case reasoning |
-| LO4 | Not delivered | — | Your clinical casework across three domains |
-| LO5 | Not delivered | An object to be reviewed | The peer reflection and feedback |
-| LO6 | Not delivered | — | Your professional conduct |
+- Screenshots or Figma exports of the final app and magnets.
+- Notes from a real patient trial.
+- QR scan and install checks from a real phone.
+- Feedback from a physiotherapist, tutor, or peer.
+- Literature appraisal tied to the content in `CLINICAL-BASIS.md`.
+- A short comparison of app, magnet, and plain verbal instruction formats.

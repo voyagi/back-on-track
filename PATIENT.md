@@ -1,78 +1,49 @@
-# Target patient profile
+# Target Patient Profile
 
-This describes the **kind of patient the toolkit is built for**, so the design can be explained and
-presented around a concrete person. It is **de-identified on purpose**: this repository is public,
-so it must not contain real, identifying details about an actual patient.
+This is a de-identified profile for design and presentation. Do not put real patient names, exact addresses, phone numbers, emails, or private health details in this public repository.
 
-> **For the assignment:** trial the toolkit with a **real** patient who fits this profile — for
-> example an older relative who agrees to take part. Keep that person's real details in your private
-> hand-in (and, if you want a working copy in this project, in a local `*.local.md` file, which is
-> git-ignored and never published). **Never put a real patient's personal or health details in this
-> public repo.**
+Keep real trial notes in local `*.local.*` files or in the private hand-in only.
 
----
+## Who It Is For
 
-## The patient this is for
+An older adult, roughly 85 to 90, with long-term low back pain and fear of movement. They may also fear falling, have low confidence with smartphones, and rely on family for some help while still wanting to remain independent at home.
 
-An older adult — roughly **85 to 90** — with **long-term low back pain**, who has become **afraid to
-move and afraid of falling**. They live in their **own home with family helping**, and what matters
-most to them is **staying independent there** rather than moving into care. They are not a confident
-smartphone user, so the physical magnets matter as much as the app.
+## Problem Pattern
 
-## The problem it solves
+The toolkit is aimed at this cycle:
 
-Because of the pain — and the fear of falling — this patient avoids moving, which starts a downward
-cycle:
+```text
+pain and fear of falling -> less movement -> weaker legs and worse balance -> higher fall risk and more pain -> even less movement
+```
 
-> **pain + fear of falling → less movement → weaker legs and worse balance → higher fall risk and
-> more pain → even less movement**
+Back on Track tries to interrupt that cycle with reassurance, gentle movement, visible reminders, and a personal goal.
 
-The less they move, the weaker and less steady they get, which makes both the pain and the fall risk
-worse, and brings closer the day they can no longer manage at home. Breaking that cycle is the point
-of the toolkit.
+## Fit
 
-## Why the toolkit fits this patient
+The app helps because:
 
-| Their situation | How the toolkit helps |
-|---|---|
-| Afraid that moving will harm the back | The "Hurt isn't harm" and "Less fear, more life" cards address the fear directly |
-| Fear of falling, unsteady | "Hold a chair if unsteady, use a bed if the floor is hard"; gentler exercise options |
-| Not a confident app user | The **fridge magnets** need no phone — a daily, physical reminder |
-| Family is involved in care | A relative can set it up and do the exercises *with* them |
-| Wants to stay in their own home | Goals and education are built around independence, not just pain |
+- The "Hurt is not harm" and "Less fear, more life" cards address fear directly.
+- The exercise screen encourages chair support or bed-based movement when the floor is hard.
+- The fridge magnets create a visible daily prompt for someone who may not open an app by habit.
+- The goal screen connects movement to independence rather than abstract fitness.
+- The progress screen gives family or a physiotherapist something simple to discuss.
 
-## Clinical note (especially in the over-85s)
+## Clinical Caution
 
-- **Red flags must be cleared by a clinician first.** Older bones fracture more easily, so new or
-  changed back pain deserves a proper check. The app's red **"When to get checked"** screen lists the
-  warning signs, but it is a backup, not a substitute.
-- **Choose the safest exercises.** Getting down to the floor may not be wise. Favour the pelvic tilt
-  and knee-to-chest done **on a bed**, very short walks **with support**, and skip anything unsafe —
-  ideally checked with a physiotherapist.
+Older adults need careful screening. New or changing back pain can have causes that need medical review. The app includes red flags, but those are a backup, not a substitute for a clinician.
 
-This picture — fear of movement and falling, with deconditioning — is what geriatric physiotherapy
-and the guidelines treat with **reassurance, gentle graded activity, and rebuilding confidence**,
-not rest. That is what the toolkit delivers.
+For a frail or unsteady person, avoid unsafe floor transfers. Consider bed-based pelvic tilts, bed-based knee to chest if appropriate, very short supported walks, and clinician-guided adaptation.
 
-## What to measure (to show whether it helped)
+## Trial Measures
 
-- **Movement:** are they doing the gentle exercises and moving around the house a little more?
-- **Confidence / fear:** before vs after — "how worried are you that moving will hurt your back?"
-  and "how afraid are you of falling?" on a simple 0–10 scale.
-- **Their goal:** are they closer to it (steadier on their feet, getting around more easily)?
-- **Which format they used:** the app, the magnets, or both — useful for the LO2 "evaluate two or
-  more formats" point.
+Record these before and after a short trial:
 
-## Using it with a real patient (the trial)
+- Movement: how many days the person used the exercises.
+- Confidence: how worried they are that movement will harm the back, scored 0 to 10.
+- Falling fear: how afraid they are of falling, scored 0 to 10.
+- Goal progress: whether they feel closer to their personal goal.
+- Format fit: whether they used the app, magnets, or both.
 
-1. **Sit with them** and set it up together — magnets on the fridge, the app if they want it — and
-   agree their goal.
-2. **Talk through the fear** using "Less fear, more life" and "Hurt isn't harm," then try one or two
-   safe, gentle exercises together so they feel secure.
-3. **Over a few weeks**, with family help, they do a little, often; the magnets are the daily nudge.
-4. **Check back in** and note what changed — movement, steadiness, confidence — for the assignment.
+## Consent And Privacy
 
----
-
-*Keep the real person behind this profile anonymous in anything public. Get their consent, use only
-their initials in the hand-in, and store their real details privately — not in this repository.*
+Get consent before using the toolkit with a real person. Use initials or a pseudonym in assignment material. Keep identifiable details out of this repository.

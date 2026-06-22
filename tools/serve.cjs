@@ -1,19 +1,13 @@
 /*
- * tools/serve.cjs — tiny dependency-free static server for local preview.
- * Usage:  node tools/serve.cjs [port]   (default 5178)
- * Binds to 127.0.0.1 only (never expose this to the network).
- *
- * Hardened so a single bad request can't take the whole server down:
- *   - browsers abort requests (cancelled image loads, service-worker prefetch),
- *     which emits a socket 'error' (ECONNRESET) — unhandled, that crashes Node;
- *   - a malformed URL makes decodeURIComponent throw a URIError.
- * Both are caught below.
+ * Tiny dependency-free static server for local preview.
+ * Usage: node tools/serve.cjs [port]
+ * Binds to 127.0.0.1 only.
  */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const root = path.join(__dirname, "..");
+const root = path.resolve(__dirname, "..");
 const port = parseInt(process.argv[2] || "5178", 10);
 const types = {
   ".html": "text/html; charset=utf-8",
@@ -27,19 +21,25 @@ const types = {
 };
 
 const server = http.createServer((req, res) => {
-  // A client may drop the connection mid-request; swallow the stream error.
   req.on("error", () => {});
   res.on("error", () => {});
   try {
-    let p = decodeURIComponent(req.url.split("?")[0]); // can throw on a malformed URL
-    if (p === "/") p = "/index.html";
-    const file = path.normalize(path.join(root, p));
-    if (!file.startsWith(root)) {
+    const url = new URL(req.url || "/", "http://127.0.0.1");
+    let pathname = decodeURIComponent(url.pathname);
+    if (pathname === "/") pathname = "/index.html";
+    if (pathname.includes("\0")) {
+      res.writeHead(400);
+      return res.end("bad request");
+    }
+    const rel = pathname.replace(/^\/+/, "");
+    const file = path.resolve(root, rel);
+    const insideRoot = path.relative(root, file);
+    if (insideRoot.startsWith("..") || path.isAbsolute(insideRoot)) {
       res.writeHead(403);
       return res.end("forbidden");
     }
     fs.readFile(file, (err, data) => {
-      if (res.writableEnded || res.destroyed) return; // connection already closed
+      if (res.writableEnded || res.destroyed) return;
       if (err) {
         res.writeHead(404);
         return res.end("not found");
@@ -51,14 +51,16 @@ const server = http.createServer((req, res) => {
     try {
       res.writeHead(400);
       res.end("bad request");
-    } catch (_) {
-      /* response already gone */
+    } catch (ignore) {
+      if (ignore) return;
     }
   }
 });
 
-// Malformed HTTP request line/headers: close cleanly instead of throwing.
 server.on("clientError", (err, socket) => {
+  if (err) {
+    /* The request is already invalid. */
+  }
   if (socket.writable) socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
 });
 
@@ -71,7 +73,6 @@ server.on("error", (err) => {
   process.exit(1);
 });
 
-// Last-resort backstop: log instead of dying silently.
 process.on("uncaughtException", (e) => {
   console.error("uncaught (server stays up):", (e && (e.stack || e.message)) || e);
 });

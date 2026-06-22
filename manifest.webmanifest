@@ -1,13 +1,13 @@
 {
-  "name": "Back on Track — back pain self-help",
+  "name": "Back on Track: back pain self-help",
   "short_name": "Back on Track",
   "description": "A simple self-help toolkit for people with ongoing low back pain.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f6f7f9",
-  "theme_color": "#1565c0",
+  "background_color": "#f4f1ea",
+  "theme_color": "#2f6f57",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },

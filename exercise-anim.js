@@ -1,15 +1,8 @@
 /*
- * exercise-anim.js — looping demonstration animations for each exercise.
+ * Looping demonstration animations for each exercise.
  *
- * Each animation is a small inline SVG with two pose groups (.pose-a / .pose-b) that
- * the CSS hard-cuts between, giving a clear two-position loop (start <-> end of the
- * movement). Stroke uses currentColor so the figure takes the section colour.
- *
- * Why drawn animations instead of video: they are accurate to each specific exercise,
- * licence-free, work offline, add no third-party tracking, and stay tiny. The exercise
- * card still supports a real <video> later (filmed clips = the above-level evidence).
- *
- * Keyed by the same ids used in content.js exercises.
+ * Each animation is a small inline SVG with two pose groups. The CSS alternates
+ * between them to show a clear start and end position for the movement.
  */
 window.EXERCISE_ANIM = (function () {
   function seg(x1, y1, x2, y2) {
@@ -23,7 +16,7 @@ window.EXERCISE_ANIM = (function () {
   }
   function svg(a, b) {
     return (
-      '<svg viewBox="0 0 240 150" class="exsvg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" class="exsvg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
       '<line class="floor" x1="24" y1="132" x2="216" y2="132"/>' +
       '<g class="pose pose-a" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none">' +
       a +

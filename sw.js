@@ -1,11 +1,8 @@
 /*
- * sw.js — service worker for offline use.
- *
- * Cache-first for the app shell so the toolkit opens with no signal (key for the
- * "use it wherever and whenever" requirement and for people with patchy data).
+ * Service worker for offline use.
  * Bump CACHE when you change any cached file so users get the update.
  */
-var CACHE = "bot-v11";
+var CACHE = "bot-v12";
 var ASSETS = [
   ".",
   "index.html",

@@ -1,10 +1,17 @@
 node_modules/
+.env
+.env*
 *.log
 .DS_Store
 Thumbs.db
 .claude/
+.planning/
+.crash-buffers/
+CLAUDE.md
+.Codex/reviews/
+coverage/
+.nyc_output/
 
-# Real patient notes / hand-in documents — never publish identifiable patient
-# details to this public repo. Keep them in local *.local.* files (git-ignored:
-# .local.md, .local.docx, .local.pdf) and in your private hand-in only.
+# Real patient notes and hand-in documents stay private.
+# Keep them in local files such as .local.md, .local.docx, and .local.pdf.
 *.local.*
