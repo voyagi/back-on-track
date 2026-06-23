@@ -68,6 +68,6 @@ test("review hardening checks stay in place", () => {
   assert.match(workflow, /actions\/setup-node@[0-9a-f]{40}/);
   assert.match(buildCheck, /index missing content\.js script/);
   assert.match(buildCheck, /index missing app\.js script/);
-  assert.match(runner, /signal \? 1 : code \|\| 0/);
+  assert.match(runner, /signal\s*\?\s*1\s*:\s*\(?\s*code\s*\|\|\s*0\s*\)?/);
   assert.match(magnets, /\[::1\]/);
 });
