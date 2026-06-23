@@ -11,11 +11,11 @@ The product is intentionally small. It has no account system, no analytics, no b
 
 ## Design Direction
 
-The interface uses the "Kitchen Table Clinic" design language:
+The interface uses the "Care Desk" design language:
 
-- Warm paper background, strong ink, and calm clinical accent colors.
-- Atkinson Hyperlegible and Source Sans 3 as the intended type pairing, with readable local fallbacks.
-- Large tap targets, plain language, and one main action per screen.
+- Warm paper background, strong ink, grounded clinical accents, and a side rail on wider screens.
+- Aptos, Avenir Next, Segoe UI, and Verdana as readable local fonts.
+- Large tap targets, plain language, and responsive layouts for phone and Windows Chrome.
 - Text badges instead of emoji icons, so the UI works for older adults and assistive tech.
 - Light and dark mode support.
 
@@ -24,7 +24,7 @@ The five color meanings are:
 - Green: move.
 - Blue: understand.
 - Amber: bad day plan.
-- Plum: personal goal.
+- Olive: personal goal.
 - Red: get checked.
 
 ## Clinical Scope

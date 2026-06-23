@@ -75,7 +75,7 @@ if (appScript === -1) errors.push("index missing app.js script");
 if (contentScript !== -1 && appScript !== -1 && contentScript > appScript) errors.push("content.js must load before app.js");
 
 const gitignore = read(".gitignore");
-if (!/(^|\n)\.env\*?(\n|$)/.test(gitignore)) errors.push(".gitignore must ignore .env");
+if (!/(^|\r?\n)\.env\*?(\r?\n|$)/.test(gitignore)) errors.push(".gitignore must ignore .env");
 if (!gitignore.includes("*.local.*")) errors.push(".gitignore must keep local patient files private");
 
 if (errors.length) {

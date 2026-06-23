@@ -221,6 +221,7 @@
     el("back").classList.toggle("show", name !== "home");
 
     var container = el("screen");
+    container.className = "screen screen-" + name;
     container.replaceChildren();
     screens[name](container);
 
@@ -297,12 +298,12 @@
       E("div", {
         className: "tiles",
         children: [
-          tile("green", "today", "MOVE", T.today.t, T.today.s),
-          tile("blue", "learn", "LEARN", T.learn.t, T.learn.s),
-          tile("amber", "flare", "PLAN", T.flare.t, T.flare.s),
-          tile("purple", "goal", "WHY", T.goal.t, T.goal.s),
+          tile("move", "today", "MOVE", T.today.t, T.today.s),
+          tile("learn", "learn", "LEARN", T.learn.t, T.learn.s),
+          tile("plan", "flare", "PLAN", T.flare.t, T.flare.s),
+          tile("goal", "goal", "WHY", T.goal.t, T.goal.s),
           E("a", {
-            className: "tile red wide",
+            className: "tile safe wide",
             href: "#/safety",
             children: [
               E("span", { className: "tile-code", text: "SAFE" }),
@@ -354,7 +355,7 @@
     var doneIds = today().done;
     var total = C.exercises.length;
     var u = C.ui.today;
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "green" } });
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "move" } });
 
     append(wrap, [
       E("h2", { className: "screen-title", text: u.title }),
@@ -396,7 +397,7 @@
   }
 
   function renderLearn(c) {
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "blue" } });
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "learn" } });
     append(wrap, [E("h2", { className: "screen-title", text: C.ui.learn.title }), E("p", { className: "screen-intro", text: C.ui.learn.intro })]);
     C.lessons.forEach(function (l, i) {
       append(wrap, [
@@ -412,7 +413,7 @@
 
   function renderFlare(c) {
     var u = C.ui.flare;
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "amber" } });
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "plan" } });
     append(wrap, [
       E("h2", { className: "screen-title", text: u.title }),
       E("div", { className: "banner", text: C.flare.reassure }),
@@ -468,7 +469,7 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "purple" },
+        attrs: { "data-c": "goal" },
         children: [E("h2", { className: "screen-title", text: u.title }), E("p", { className: "screen-intro", text: u.intro }), input, E("div", { className: "chips", children: chips }), saveButton],
       })
     );
@@ -478,7 +479,7 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "red" },
+        attrs: { "data-c": "safe" },
         children: [
           E("h2", { className: "screen-title", text: C.ui.safety.title }),
           E("p", { className: "screen-intro", text: C.redFlags.intro }),
