@@ -628,7 +628,7 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "blue" },
+        attrs: { "data-c": "learn" },
         children: [E("h2", { className: "screen-title", text: p.title }), E("p", { className: "screen-intro", text: p.intro }), body, shareButton, clearButton, E("p", { className: "privacy-note", text: p.privacy })],
       })
     );

@@ -23,7 +23,7 @@ Colors should be expressed in OKLCH where possible. Keep saturation moderate, es
 Use local, readable system fonts with a Windows-first path:
 
 ```css
-Aptos, "Avenir Next", "Segoe UI", Verdana, sans-serif
+"Aptos", "Avenir Next", "Segoe UI", "Verdana", sans-serif
 ```
 
 Use larger body text than a typical productivity app. Keep labels compact, but never tiny.

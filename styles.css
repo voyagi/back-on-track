@@ -32,7 +32,7 @@
   --radius: 14px;
   --small-radius: 10px;
   --tap: 56px;
-  --font: Aptos, "Avenir Next", "Segoe UI", Verdana, sans-serif;
+  --font: "Aptos", "Avenir Next", "Segoe UI", "Verdana", sans-serif;
 }
 
 * {
