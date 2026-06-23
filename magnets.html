@@ -307,7 +307,7 @@
       function cleanBase(value) {
         try {
           var url = new URL(value);
-          var local = url.hostname === "127.0.0.1" || url.hostname === "localhost";
+          var local = url.hostname === "127.0.0.1" || url.hostname === "localhost" || url.hostname === "[::1]" || url.hostname === "::1";
           if (url.protocol !== "https:" && !local) return null;
           url.hash = "";
           url.search = "";

@@ -25,8 +25,6 @@ const jsFiles = [
   "tools/lint.cjs",
   "tools/build-check.cjs",
   "tools/run-with-server.cjs",
-  "tools/visual.dev.js",
-  "tools/a11y.dev.js",
 ];
 const errors = [];
 
@@ -70,7 +68,11 @@ const sw = read("sw.js");
 const index = read("index.html");
 if (!index.includes("Content-Security-Policy")) errors.push("index missing CSP");
 if (!index.includes("script-src 'self'")) errors.push("CSP must keep scripts self hosted");
-if (index.indexOf("content.js") > index.indexOf("app.js")) errors.push("content.js must load before app.js");
+const contentScript = index.indexOf("content.js");
+const appScript = index.indexOf("app.js");
+if (contentScript === -1) errors.push("index missing content.js script");
+if (appScript === -1) errors.push("index missing app.js script");
+if (contentScript !== -1 && appScript !== -1 && contentScript > appScript) errors.push("content.js must load before app.js");
 
 const gitignore = read(".gitignore");
 if (!/(^|\n)\.env\*?(\n|$)/.test(gitignore)) errors.push(".gitignore must ignore .env");

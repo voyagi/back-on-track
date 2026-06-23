@@ -27,7 +27,7 @@ server.stdout.on("data", (data) => {
   buffer += data.toString();
   if (!child && buffer.includes("http://127.0.0.1:5178")) {
     child = spawn(args[0], args.slice(1), { cwd: process.cwd(), stdio: "inherit", shell: process.platform === "win32" });
-    child.on("exit", (code) => finish(code || 0));
+    child.on("exit", (code, signal) => finish(signal ? 1 : code || 0));
     child.on("error", () => finish(1));
   }
 });

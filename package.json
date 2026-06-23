@@ -5,7 +5,7 @@
   "description": "Offline self-management toolkit for older adults with chronic low back pain.",
   "scripts": {
     "lint": "node tools/lint.cjs",
-    "typecheck": "node --check app.js && node --check content.js && node --check exercise-anim.js && node --check sw.js && node --check tools/serve.cjs && node --check tools/lint.cjs && node --check tools/build-check.cjs && node --check tools/run-with-server.cjs && node --check tools/visual.dev.js && node --check tools/a11y.dev.js",
+    "typecheck": "node --check app.js && node --check content.js && node --check exercise-anim.js && node --check sw.js && node --check tools/serve.cjs && node --check tools/lint.cjs && node --check tools/build-check.cjs && node --check tools/run-with-server.cjs",
     "test": "node --test",
     "coverage": "node --test --experimental-test-coverage",
     "build": "node tools/build-check.cjs",

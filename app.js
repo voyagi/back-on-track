@@ -26,8 +26,9 @@
     if (typeof s.lang !== "string") delete s.lang;
 
     var src = s.days && typeof s.days === "object" && !Array.isArray(s.days) ? s.days : {};
-    var days = {};
+    var days = Object.create(null);
     Object.keys(src).forEach(function (k) {
+      if (k === "__proto__" || k === "constructor" || k === "prototype") return;
       var d = src[k];
       if (!d || typeof d !== "object") return;
       days[k] = {

@@ -54,3 +54,20 @@ test("privacy controls and safer rendering paths are present", () => {
   assert.doesNotMatch(magnets, /innerHTML\s*=/);
   assert.match(app, /replaceChildren/);
 });
+
+test("review hardening checks stay in place", () => {
+  const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
+  const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "quality.yml"), "utf8");
+  const buildCheck = fs.readFileSync(path.join(root, "tools", "build-check.cjs"), "utf8");
+  const runner = fs.readFileSync(path.join(root, "tools", "run-with-server.cjs"), "utf8");
+  const magnets = fs.readFileSync(path.join(root, "magnets.html"), "utf8");
+  assert.match(app, /Object\.create\(null\)/);
+  assert.match(app, /__proto__/);
+  assert.match(workflow, /actions\/checkout@[0-9a-f]{40}/);
+  assert.match(workflow, /persist-credentials: false/);
+  assert.match(workflow, /actions\/setup-node@[0-9a-f]{40}/);
+  assert.match(buildCheck, /index missing content\.js script/);
+  assert.match(buildCheck, /index missing app\.js script/);
+  assert.match(runner, /signal \? 1 : code \|\| 0/);
+  assert.match(magnets, /\[::1\]/);
+});
