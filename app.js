@@ -1,67 +1,77 @@
 /*
- * app.js — Back on Track
+ * app.js - Back on Track
  *
- * Dependency-free single-page app. Hash routing (#/today) so it works on any static host
- * and offline. All state is kept on the device in localStorage (no accounts, no servers).
- *
- * Bilingual: window.CONTENT has `en` and `nl`. The chosen language is stored on the device
- * and can be switched live with the header toggle. Every visible string comes from CONTENT,
- * so adding a language never touches this file.
- *
- * Sections map one-to-one to the fridge magnets:
- *   green=today  blue=learn  amber=flare  purple=goal  red=safety
+ * Dependency-free single-page app. Hash routing works on static hosts and offline.
+ * State stays on the device in localStorage. Stored values are treated as untrusted
+ * and sanitized before use.
  */
 (function () {
   "use strict";
-  var STORE_KEY = "bot.v1";
-  var ANIM = Object.freeze(window.EXERCISE_ANIM || {}); // frozen: only our static SVG strings
 
-  /* ---------------- state ---------------- */
+  var STORE_KEY = "bot.v1";
+  var ANIM = Object.freeze(window.EXERCISE_ANIM || {});
+
   function load() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    } catch (e) {
+      return {};
+    }
   }
-  // Coerce persisted state into the expected shape so corrupted or tampered localStorage
-  // (wrong types, a non-array `done`, a non-numeric `feel`) degrades gracefully instead of
-  // hard-crashing the app on load or on a tap.
+
   function sanitizeState(s) {
     if (!s || typeof s !== "object" || Array.isArray(s)) s = {};
-    if (typeof s.goal === "string") s.goal = s.goal.slice(0, 80); else delete s.goal;
+    if (typeof s.goal === "string") s.goal = s.goal.slice(0, 80);
+    else delete s.goal;
     if (typeof s.lang !== "string") delete s.lang;
+
     var src = s.days && typeof s.days === "object" && !Array.isArray(s.days) ? s.days : {};
-    var days = {};
+    var days = Object.create(null);
     Object.keys(src).forEach(function (k) {
+      if (k === "__proto__" || k === "constructor" || k === "prototype") return;
       var d = src[k];
       if (!d || typeof d !== "object") return;
       days[k] = {
-        done: Array.isArray(d.done) ? d.done.filter(function (x) { return typeof x === "string"; }) : [],
+        done: Array.isArray(d.done)
+          ? d.done.filter(function (x) {
+              return typeof x === "string";
+            })
+          : [],
         feel: typeof d.feel === "number" && isFinite(d.feel) ? d.feel : null,
       };
     });
     s.days = days;
     return s;
   }
+
   function save() {
-    // Guarded: Safari private mode and a full quota throw on setItem. If that happens the
-    // app keeps working from in-memory state for the session instead of crashing on every save.
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    } catch (e) {
+      /* Local storage can fail in private mode or when quota is full. */
+    }
   }
-  function nextLang() {
-    var keys = Object.keys(window.CONTENT);
-    return keys[(keys.indexOf(lang) + 1) % keys.length];
-  }
+
   var state = sanitizeState(load());
 
-  /* ---------------- language ---------------- */
   function detectLang() {
     var nav = (navigator.language || "en").toLowerCase();
     return nav.indexOf("nl") === 0 ? "nl" : "en";
   }
+
   var qLang = (location.search.match(/[?&]lang=(en|nl)\b/) || [])[1];
   var lang = qLang || state.lang || detectLang();
   if (!window.CONTENT[lang]) lang = "en";
-  // A magnet QR can carry ?lang=nl so it opens (and remembers) the right language.
-  if (qLang && state.lang !== qLang) { state.lang = qLang; save(); }
+  if (qLang && state.lang !== qLang) {
+    state.lang = qLang;
+    save();
+  }
   var C = window.CONTENT[lang];
+
+  function nextLang() {
+    var keys = Object.keys(window.CONTENT);
+    return keys[(keys.indexOf(lang) + 1) % keys.length];
+  }
 
   function setLang(l) {
     if (!window.CONTENT[l]) return;
@@ -74,17 +84,24 @@
     route();
   }
 
-  /* ---------------- dates ---------------- */
   function dateKey(back) {
     var d = new Date();
     d.setDate(d.getDate() - (back || 0));
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
   }
+
   function today() {
     var k = dateKey(0);
     if (!state.days[k]) state.days[k] = { done: [], feel: null };
     return state.days[k];
   }
+
   function daysMovedThisWeek() {
     var n = 0;
     for (var i = 0; i < 7; i++) {
@@ -94,27 +111,80 @@
     return n;
   }
 
-  /* ---------------- helpers ---------------- */
-  function el(id) { return document.getElementById(id); }
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (m) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m];
-    });
-  }
-  function tpl(s, map) {
-    return s.replace(/\{(\w+)\}/g, function (_, k) { return k in map ? map[k] : "{" + k + "}"; });
-  }
-  function exerciseById(id) {
-    for (var i = 0; i < C.exercises.length; i++) if (C.exercises[i].id === id) return C.exercises[i];
-    return null;
-  }
-  // Media block: the looping animation for this exercise (falls back to a play glyph).
-  function media(id, stepLabel) {
-    var anim = ANIM[id] || '<span class="play">▶</span>';
-    return '<div class="media">' + (stepLabel ? '<span class="stepno">' + stepLabel + "</span>" : "") + anim + "</div>";
+  function el(id) {
+    return document.getElementById(id);
   }
 
-  /* ---------------- chrome (nav labels + language button) ---------------- */
+  function tpl(s, map) {
+    return s.replace(/\{(\w+)\}/g, function (_, k) {
+      return k in map ? map[k] : "{" + k + "}";
+    });
+  }
+
+  function E(tag, opts) {
+    var n = document.createElement(tag);
+    opts = opts || {};
+    if (opts.className) n.className = opts.className;
+    if (opts.text != null) n.textContent = opts.text;
+    if (opts.href) n.setAttribute("href", opts.href);
+    if (opts.id) n.id = opts.id;
+    if (opts.type) n.type = opts.type;
+    if (opts.maxLength) n.maxLength = opts.maxLength;
+    if (opts.placeholder) n.placeholder = opts.placeholder;
+    if (opts.value != null) n.value = opts.value;
+    if (opts.attrs) {
+      Object.keys(opts.attrs).forEach(function (k) {
+        n.setAttribute(k, opts.attrs[k]);
+      });
+    }
+    if (opts.dataset) {
+      Object.keys(opts.dataset).forEach(function (k) {
+        n.dataset[k] = opts.dataset[k];
+      });
+    }
+    if (opts.children) append(n, opts.children);
+    return n;
+  }
+
+  function append(parent, children) {
+    if (!Array.isArray(children)) children = [children];
+    children.forEach(function (child) {
+      if (child == null) return;
+      if (Array.isArray(child)) append(parent, child);
+      else parent.appendChild(typeof child === "string" ? document.createTextNode(child) : child);
+    });
+    return parent;
+  }
+
+  function section(className, children) {
+    return E("section", { className: className, children: children });
+  }
+
+  function token(label) {
+    return E("span", { className: "token", attrs: { "aria-hidden": "true" }, text: label });
+  }
+
+  function exerciseById(id) {
+    for (var i = 0; i < C.exercises.length; i++) {
+      if (C.exercises[i].id === id) return C.exercises[i];
+    }
+    return null;
+  }
+
+  function animationNode(id) {
+    var anim = ANIM[id];
+    if (!anim) return E("span", { className: "demo-fallback", text: "Demo" });
+    var doc = new DOMParser().parseFromString(anim, "image/svg+xml");
+    var svg = doc.documentElement && doc.documentElement.nodeName.toLowerCase() === "svg" ? doc.documentElement : null;
+    return svg ? document.importNode(svg, true) : E("span", { className: "demo-fallback", text: "Demo" });
+  }
+
+  function media(id, stepLabel) {
+    var box = E("div", { className: "media", children: [animationNode(id)] });
+    if (stepLabel) box.prepend(E("span", { className: "stepno", text: stepLabel }));
+    return box;
+  }
+
   function applyChrome() {
     Array.prototype.forEach.call(document.querySelectorAll(".tabbar a"), function (a) {
       var tab = a.getAttribute("data-tab");
@@ -123,16 +193,22 @@
     });
     var lb = el("langBtn");
     if (lb) {
-      // Show the NEXT language's own name, so adding a third language to content.js just works.
       var nn = window.CONTENT[nextLang()].ui.langName || nextLang().toUpperCase();
-      lb.textContent = "🌐 " + nn;
+      lb.textContent = nn;
       lb.setAttribute("title", C.ui.switchTitle);
-      lb.setAttribute("aria-label", C.ui.switchTitle);
+      lb.setAttribute("aria-label", nn + ". " + C.ui.switchTitle);
     }
   }
 
-  /* ---------------- routing ---------------- */
-  var screens = { home: renderHome, today: renderToday, learn: renderLearn, flare: renderFlare, goal: renderGoal, safety: renderSafety, progress: renderProgress };
+  var screens = {
+    home: renderHome,
+    today: renderToday,
+    learn: renderLearn,
+    flare: renderFlare,
+    goal: renderGoal,
+    safety: renderSafety,
+    progress: renderProgress,
+  };
 
   function currentRoute() {
     var h = (location.hash || "#/home").replace(/^#\//, "").split("?")[0];
@@ -143,166 +219,300 @@
     var name = currentRoute();
     el("title").textContent = name === "home" ? C.ui.brand : C.ui.header[name];
     el("back").classList.toggle("show", name !== "home");
+
     var container = el("screen");
-    container.innerHTML = "";
+    container.replaceChildren();
     screens[name](container);
-    // Show the iOS "add to home screen" tip on EVERY screen — a magnet QR lands on a section, not
-    // home — because installing is what makes the saved progress durable on iOS.
-    if (iosNeedsHint()) container.insertAdjacentHTML("afterbegin", '<div class="install-hint show">📲 ' + esc(C.ui.install.ios) + "</div>");
+
+    if (iosNeedsHint()) {
+      container.prepend(installHint(C.ui.install.ios, null, true));
+    }
+
     Array.prototype.forEach.call(document.querySelectorAll(".tabbar a"), function (a) {
       if (a.getAttribute("data-tab") === name) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
-    var head = container.querySelector("h2, h1");
-    if (head) { head.setAttribute("tabindex", "-1"); head.focus({ preventScroll: true }); }
     window.scrollTo(0, 0);
   }
 
-  /* ---------------- screens ---------------- */
-  function tile(color, r, ico, t, s) {
-    return '<a class="tile ' + color + '" href="#/' + r + '"><span class="ico">' + ico + "</span><span>" + esc(t) + "<br><small>" + esc(s) + "</small></span></a>";
+  function tile(color, r, code, t, s) {
+    return E("a", {
+      className: "tile " + color,
+      href: "#/" + r,
+      children: [
+        E("span", { className: "tile-code", text: code }),
+        E("span", {
+          className: "tile-copy",
+          children: [
+            E("span", { className: "tile-title", text: t }),
+            E("span", { className: "tile-sub", text: s }),
+          ],
+        }),
+      ],
+    });
   }
 
   function movedMsg(moved, doneToday) {
-    if (!moved) return "";
+    if (!moved) return null;
     var m = C.ui.moved;
     var base = moved === 1 ? m.one : tpl(m.many, { n: moved });
-    return '<a class="today-progress" href="#/progress" style="margin-top:14px;display:block;text-decoration:none">👏 ' + esc(base) + esc(doneToday ? m.incToday : "") + "</a>";
+    return E("a", {
+      className: "today-progress home-progress",
+      href: "#/progress",
+      text: base + (doneToday ? m.incToday : ""),
+    });
+  }
+
+  function installHint(message, buttonLabel, primary) {
+    var children = [E("span", { text: message })];
+    if (buttonLabel) children.push(E("button", { id: "installBtn", text: buttonLabel }));
+    return E("div", { className: "install-hint" + (primary ? " show" : ""), id: primary ? "" : "installHint", children: children });
   }
 
   function renderHome(c) {
     var goal = state.goal;
     var T = C.ui.tiles;
-    var facesHtml = C.feelFaces.map(function (f) {
-      return '<button class="face" data-feel="' + f.value + '" aria-pressed="' + (today().feel === f.value) + '"><span class="em">' + f.emoji + "</span>" + esc(f.label) + "</button>";
-    }).join("");
 
-    c.innerHTML =
-      '<section class="hero">' +
-      '<p class="hello">' + esc(C.ui.hello) + " 👋</p>" +
-      '<p class="sub">' + esc(C.ui.tagline) + "</p>" +
-      '<a class="goal-pinned' + (goal ? "" : " empty") + '" href="#/goal"><span class="star">⭐</span><span><span class="label">' +
-      esc(C.ui.goalPinned.label) + '</span><br><span class="value">' + esc(goal || C.ui.goalPinned.empty) + "</span></span></a>" +
-      "</section>" +
-      '<div class="install-hint" id="installHint">📲 ' + esc(C.ui.install.text) + '<button id="installBtn">' + esc(C.ui.install.add) + "</button></div>" +
-      '<h2 class="screen-title" style="font-size:20px;color:var(--ink)">' + esc(C.ui.whatNeed) + "</h2>" +
-      '<div class="tiles">' +
-      tile("green", "today", "🏃", T.today.t, T.today.s) +
-      tile("blue", "learn", "💡", T.learn.t, T.learn.s) +
-      tile("amber", "flare", "🌧️", T.flare.t, T.flare.s) +
-      tile("purple", "goal", "⭐", T.goal.t, T.goal.s) +
-      '<a class="tile red wide" href="#/safety"><span class="ico">🚩</span><span>' + esc(T.safety.t) + "<br><small>" + esc(T.safety.s) + "</small></span></a>" +
-      "</div>" +
-      '<section class="checkin"><h2>' + esc(C.ui.howFeel) + '</h2><div class="faces">' + facesHtml + "</div>" +
-      movedMsg(daysMovedThisWeek(), today().done.length > 0) + "</section>" +
-      '<a class="progress-link" href="#/progress">📊 ' + esc(C.ui.progress.link) + "</a>" +
-      '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p>";
+    append(c, [
+      section("hero", [
+        E("p", { className: "hello", text: C.ui.hello }),
+        E("p", { className: "sub", text: C.ui.tagline }),
+        E("a", {
+          className: "goal-pinned" + (goal ? "" : " empty"),
+          href: "#/goal",
+          children: [
+            token("G"),
+            E("span", {
+              className: "goal-copy",
+              children: [
+                E("span", { className: "label", text: C.ui.goalPinned.label }),
+                E("span", { className: "value", text: goal || C.ui.goalPinned.empty }),
+              ],
+            }),
+          ],
+        }),
+      ]),
+      installHint(C.ui.install.text, C.ui.install.add, false),
+      E("h2", { className: "home-heading", text: C.ui.whatNeed }),
+      E("div", {
+        className: "tiles",
+        children: [
+          tile("green", "today", "MOVE", T.today.t, T.today.s),
+          tile("blue", "learn", "LEARN", T.learn.t, T.learn.s),
+          tile("amber", "flare", "PLAN", T.flare.t, T.flare.s),
+          tile("purple", "goal", "WHY", T.goal.t, T.goal.s),
+          E("a", {
+            className: "tile red wide",
+            href: "#/safety",
+            children: [
+              E("span", { className: "tile-code", text: "SAFE" }),
+              E("span", {
+                className: "tile-copy",
+                children: [E("span", { className: "tile-title", text: T.safety.t }), E("span", { className: "tile-sub", text: T.safety.s })],
+              }),
+            ],
+          }),
+        ],
+      }),
+      renderCheckin(),
+      E("a", { className: "progress-link", href: "#/progress", text: C.ui.progress.link }),
+      E("p", { className: "disclaimer", text: C.ui.disclaimer }),
+    ]);
 
-    Array.prototype.forEach.call(c.querySelectorAll(".face"), function (b) {
-      b.addEventListener("click", function () { today().feel = parseInt(b.getAttribute("data-feel"), 10); save(); route(); });
-    });
     wireInstall();
+  }
+
+  function renderCheckin() {
+    var buttons = C.feelFaces.map(function (f) {
+      return E("button", {
+        className: "face",
+        attrs: {
+          "data-feel": String(f.value),
+          "aria-pressed": String(today().feel === f.value),
+        },
+        children: [E("span", { className: "face-mark", text: f.mark }), E("span", { className: "face-label", text: f.label })],
+      });
+    });
+
+    var wrap = section("checkin", [
+      E("h2", { text: C.ui.howFeel }),
+      E("div", { className: "faces", children: buttons }),
+      movedMsg(daysMovedThisWeek(), today().done.length > 0),
+    ]);
+
+    Array.prototype.forEach.call(wrap.querySelectorAll(".face"), function (b) {
+      b.addEventListener("click", function () {
+        today().feel = parseInt(b.getAttribute("data-feel"), 10);
+        save();
+        route();
+      });
+    });
+    return wrap;
   }
 
   function renderToday(c) {
     var doneIds = today().done;
     var total = C.exercises.length;
     var u = C.ui.today;
-    var cards = C.exercises.map(function (ex, i) {
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "green" } });
+
+    append(wrap, [
+      E("h2", { className: "screen-title", text: u.title }),
+      E("p", { className: "screen-intro", text: u.intro }),
+      E("div", { className: "today-progress", text: tpl(u.progress, { d: doneIds.length, t: total }) + (doneIds.length >= total ? u.complete : "") }),
+    ]);
+
+    C.exercises.forEach(function (ex, i) {
       var isDone = doneIds.indexOf(ex.id) !== -1;
-      return '<article class="card exercise">' + media(ex.id, (i + 1) + "/" + total) +
-        "<h3>" + esc(ex.name) + "</h3>" +
-        '<p class="cue">' + esc(ex.cue) + "</p>" +
-        '<p class="reps">' + esc(ex.reps) + "</p>" +
-        '<p class="why">' + esc(ex.why) + "</p>" +
-        '<button class="done-btn" data-ex="' + ex.id + '" aria-pressed="' + isDone + '">' + esc(isDone ? u.done : u.markDone) + "</button></article>";
-    }).join("");
-
-    c.innerHTML =
-      '<div class="screen" data-c="green">' +
-      '<h2 class="screen-title">' + esc(u.title) + "</h2>" +
-      '<p class="screen-intro">' + esc(u.intro) + "</p>" +
-      '<div class="today-progress">' + esc(tpl(u.progress, { d: doneIds.length, t: total }) + (doneIds.length >= total ? u.complete : "")) + "</div>" +
-      cards + "</div>";
-
-    Array.prototype.forEach.call(c.querySelectorAll(".done-btn"), function (b) {
-      b.addEventListener("click", function () {
-        var arr = today().done, id = b.getAttribute("data-ex"), idx = arr.indexOf(id);
-        if (idx === -1) arr.push(id); else arr.splice(idx, 1);
-        save(); route();
+      var button = E("button", {
+        className: "done-btn",
+        attrs: { "data-ex": ex.id, "aria-pressed": String(isDone) },
+        text: isDone ? u.done : u.markDone,
       });
+      button.addEventListener("click", function () {
+        var arr = today().done;
+        var idx = arr.indexOf(ex.id);
+        if (idx === -1) arr.push(ex.id);
+        else arr.splice(idx, 1);
+        save();
+        route();
+      });
+
+      append(wrap, [
+        E("article", {
+          className: "card exercise",
+          children: [
+            media(ex.id, i + 1 + " of " + total),
+            E("h3", { text: ex.name }),
+            E("p", { className: "cue", text: ex.cue }),
+            E("p", { className: "reps", text: ex.reps }),
+            E("p", { className: "why", text: ex.why }),
+            button,
+          ],
+        }),
+      ]);
     });
+    c.appendChild(wrap);
   }
 
   function renderLearn(c) {
-    var cards = C.lessons.map(function (l, i) {
-      return '<details class="card lesson"' + (i === 0 ? " open" : "") + "><summary>" + esc(l.title) + "</summary><p>" + esc(l.body) + "</p></details>";
-    }).join("");
-    c.innerHTML = '<div class="screen" data-c="blue"><h2 class="screen-title">' + esc(C.ui.learn.title) + '</h2><p class="screen-intro">' + esc(C.ui.learn.intro) + "</p>" + cards + "</div>";
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "blue" } });
+    append(wrap, [E("h2", { className: "screen-title", text: C.ui.learn.title }), E("p", { className: "screen-intro", text: C.ui.learn.intro })]);
+    C.lessons.forEach(function (l, i) {
+      append(wrap, [
+        E("details", {
+          className: "card lesson",
+          attrs: i === 0 ? { open: "" } : null,
+          children: [E("summary", { text: l.title }), E("p", { text: l.body })],
+        }),
+      ]);
+    });
+    c.appendChild(wrap);
   }
 
   function renderFlare(c) {
     var u = C.ui.flare;
-    var steps = C.flare.steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
-    var routine = C.flare.gentleRoutine.map(function (id) {
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "amber" } });
+    append(wrap, [
+      E("h2", { className: "screen-title", text: u.title }),
+      E("div", { className: "banner", text: C.flare.reassure }),
+      E("h3", { className: "section-heading", text: u.tryThis }),
+      E("ol", {
+        className: "steps",
+        children: C.flare.steps.map(function (s) {
+          return E("li", { text: s });
+        }),
+      }),
+      E("h3", { className: "section-heading", text: u.easyRoutine }),
+    ]);
+
+    C.flare.gentleRoutine.forEach(function (id) {
       var ex = exerciseById(id);
-      return ex ? '<article class="card exercise">' + media(ex.id, null) + "<h3>" + esc(ex.name) + '</h3><p class="cue">' + esc(ex.cue) + '</p><p class="reps">' + esc(ex.reps) + "</p></article>" : "";
-    }).join("");
-    c.innerHTML =
-      '<div class="screen" data-c="amber">' +
-      '<h2 class="screen-title">' + esc(u.title) + "</h2>" +
-      '<div class="banner">' + esc(C.flare.reassure) + "</div>" +
-      '<h3 style="margin:8px 0">' + esc(u.tryThis) + '</h3><ol class="steps">' + steps + "</ol>" +
-      '<h3 style="margin:8px 0">' + esc(u.easyRoutine) + "</h3>" + routine +
-      '<div class="banner" style="margin-top:8px">' + esc(C.flare.seekHelp) + ' <a href="#/safety" style="color:inherit;font-weight:800;text-decoration:underline">' + esc(u.openIt) + " →</a></div></div>";
+      if (!ex) return;
+      wrap.appendChild(
+        E("article", {
+          className: "card exercise",
+          children: [media(ex.id, null), E("h3", { text: ex.name }), E("p", { className: "cue", text: ex.cue }), E("p", { className: "reps", text: ex.reps })],
+        })
+      );
+    });
+
+    append(wrap, [
+      E("div", {
+        className: "banner action-link",
+        children: [E("span", { text: C.flare.seekHelp + " " }), E("a", { href: "#/safety", text: u.openIt })],
+      }),
+    ]);
+    c.appendChild(wrap);
   }
 
   function renderGoal(c) {
     var u = C.ui.goal;
-    var chips = C.goalPrompts.map(function (g) { return '<button class="chip" data-goal="' + esc(g) + '">' + esc(g) + "</button>"; }).join("");
-    c.innerHTML =
-      '<div class="screen" data-c="purple">' +
-      '<h2 class="screen-title">' + esc(u.title) + "</h2>" +
-      '<p class="screen-intro">' + esc(u.intro) + "</p>" +
-      '<input class="goal-input" id="goalInput" type="text" maxlength="80" placeholder="' + esc(u.placeholder) + '" value="' + esc(state.goal || "") + '">' +
-      '<div class="chips">' + chips + "</div>" +
-      '<button class="primary-btn" id="saveGoal">' + esc(u.save) + "</button></div>";
-    Array.prototype.forEach.call(c.querySelectorAll(".chip"), function (b) {
-      b.addEventListener("click", function () { el("goalInput").value = b.getAttribute("data-goal"); });
+    var input = E("input", { className: "goal-input", id: "goalInput", type: "text", maxLength: 80, placeholder: u.placeholder, value: state.goal || "" });
+    var chips = C.goalPrompts.map(function (g) {
+      var b = E("button", { className: "chip", text: g, attrs: { "data-goal": g } });
+      b.addEventListener("click", function () {
+        input.value = b.getAttribute("data-goal");
+      });
+      return b;
     });
-    el("saveGoal").addEventListener("click", function () {
-      var v = el("goalInput").value.trim().slice(0, 80);
-      state.goal = v; // an empty value clears the goal
+    var saveButton = E("button", { className: "primary-btn", id: "saveGoal", text: u.save });
+    saveButton.addEventListener("click", function () {
+      var v = input.value.trim().slice(0, 80);
+      state.goal = v;
       save();
       showToast(v ? u.saved : u.cleared);
       location.hash = "#/home";
     });
+
+    c.appendChild(
+      E("div", {
+        className: "screen-body",
+        attrs: { "data-c": "purple" },
+        children: [E("h2", { className: "screen-title", text: u.title }), E("p", { className: "screen-intro", text: u.intro }), input, E("div", { className: "chips", children: chips }), saveButton],
+      })
+    );
   }
 
   function renderSafety(c) {
-    var flags = C.redFlags.flags.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("");
-    c.innerHTML =
-      '<div class="screen" data-c="red">' +
-      '<h2 class="screen-title">' + esc(C.ui.safety.title) + "</h2>" +
-      '<p class="screen-intro">' + esc(C.redFlags.intro) + "</p>" +
-      '<ul class="flags">' + flags + "</ul>" +
-      '<div class="action-box">' + esc(C.redFlags.action) + "</div>" +
-      '<p class="screen-intro" style="margin-top:12px">' + esc(C.redFlags.cantCatch) + "</p>" +
-      '<p class="disclaimer">' + esc(C.ui.disclaimer) + "</p></div>";
+    c.appendChild(
+      E("div", {
+        className: "screen-body",
+        attrs: { "data-c": "red" },
+        children: [
+          E("h2", { className: "screen-title", text: C.ui.safety.title }),
+          E("p", { className: "screen-intro", text: C.redFlags.intro }),
+          E("ul", {
+            className: "flags",
+            children: C.redFlags.flags.map(function (f) {
+              return E("li", { text: f });
+            }),
+          }),
+          E("div", { className: "action-box", text: C.redFlags.action }),
+          E("p", { className: "screen-intro safety-net", text: C.redFlags.cantCatch }),
+          E("p", { className: "disclaimer", text: C.ui.disclaimer }),
+        ],
+      })
+    );
   }
 
-  /* ---------------- progress (a summary the patient can share with their physio) ---------------- */
   function progressStats() {
     var days = state.days || {};
-    var exerciseDaysTotal = 0, exercises = 0, firstK = null;
-    Object.keys(days).sort().forEach(function (k) {
-      var d = days[k];
-      var did = d.done && d.done.length > 0;
-      if (did) exerciseDaysTotal++;
-      if ((did || d.feel != null) && !firstK) firstK = k; // range starts at the first day of any use
-      if (d.done) exercises += d.done.length;
-    });
-    var trend = [], exerciseDaysWeek = 0;
+    var exerciseDaysTotal = 0;
+    var exercises = 0;
+    var firstK = null;
+    Object.keys(days)
+      .sort()
+      .forEach(function (k) {
+        var d = days[k];
+        var did = d.done && d.done.length > 0;
+        if (did) exerciseDaysTotal++;
+        if ((did || d.feel != null) && !firstK) firstK = k;
+        if (d.done) exercises += d.done.length;
+      });
+
+    var trend = [];
+    var exerciseDaysWeek = 0;
     for (var i = 6; i >= 0; i--) {
       var dd = days[dateKey(i)];
       if (dd && dd.done && dd.done.length > 0) exerciseDaysWeek++;
@@ -311,15 +521,22 @@
     return { exerciseDaysTotal: exerciseDaysTotal, exerciseDaysWeek: exerciseDaysWeek, exercises: exercises, trend: trend, firstK: firstK, todayK: dateKey(0) };
   }
 
-  function feelEmoji(v) {
-    var f = v == null ? null : C.feelFaces[v];
-    return f ? f.emoji : null; // guards against an out-of-range / corrupted persisted feel value
+  function feelItem(v) {
+    if (v == null) return null;
+    for (var i = 0; i < C.feelFaces.length; i++) {
+      if (C.feelFaces[i].value === v) return C.feelFaces[i];
+    }
+    return null;
   }
-  function feelTrendHtml(trend) {
-    return '<div class="feel-trend">' + trend.map(function (v) {
-      var e = feelEmoji(v);
-      return e ? "<span>" + e + "</span>" : '<span class="none">·</span>';
-    }).join("") + "</div>";
+
+  function feelTrendNode(trend) {
+    return E("div", {
+      className: "feel-trend",
+      children: trend.map(function (v) {
+        var f = feelItem(v);
+        return E("span", { className: f ? "" : "none", text: f ? f.mark : "-" });
+      }),
+    });
   }
 
   function progressShareText(p, st) {
@@ -327,82 +544,122 @@
     if (state.goal) lines.push(p.goalLabel + ": " + state.goal);
     lines.push(p.activeDays + ": " + st.exerciseDaysTotal + " (" + p.thisWeek + ": " + st.exerciseDaysWeek + ")");
     lines.push(p.exercises + ": " + st.exercises);
-    lines.push(p.feeling + ": " + st.trend.map(function (v) { return feelEmoji(v) || "-"; }).join(" "));
+    lines.push(
+      p.feeling +
+        ": " +
+        st.trend
+          .map(function (v) {
+            var f = feelItem(v);
+            return f ? f.label : "-";
+          })
+          .join(" ")
+    );
     if (st.firstK) lines.push(tpl(p.range, { from: st.firstK, to: st.todayK }));
     return lines.join("\n");
   }
 
   function copyText(text, p) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { showToast(p.copied); }, function () { legacyCopy(text, p); });
+      navigator.clipboard.writeText(text).then(
+        function () {
+          showToast(p.copied);
+        },
+        function () {
+          legacyCopy(text, p);
+        }
+      );
     } else {
       legacyCopy(text, p);
     }
   }
+
   function legacyCopy(text, p) {
     try {
       var ta = document.createElement("textarea");
-      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      document.execCommand("copy"); document.body.removeChild(ta);
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.className = "copy-buffer";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
       showToast(p.copied);
-    } catch (e) {}
+    } catch (e) {
+      /* Clipboard fallback failed. The app stays usable. */
+    }
   }
 
   function renderProgress(c) {
     var p = C.ui.progress;
     var st = progressStats();
     var hasData = st.exerciseDaysTotal > 0 || !!st.firstK || !!state.goal;
-    var body =
-      '<div class="stat"><div class="num">' + st.exerciseDaysTotal + '</div><div class="lbl">' + esc(p.activeDays) +
-      " (" + esc(p.thisWeek) + ": " + st.exerciseDaysWeek + ")</div></div>" +
-      '<div class="stat"><div class="num">' + st.exercises + '</div><div class="lbl">' + esc(p.exercises) + "</div></div>" +
-      '<div class="stat"><div class="lbl" style="margin-bottom:6px">' + esc(p.feeling) + "</div>" + feelTrendHtml(st.trend) + "</div>" +
-      (state.goal ? '<div class="stat"><div class="lbl">' + esc(p.goalLabel) + '</div><div style="font-weight:700">⭐ ' + esc(state.goal) + "</div></div>" : "") +
-      (st.firstK ? '<p class="screen-intro" style="margin-top:4px">' + esc(tpl(p.range, { from: st.firstK, to: st.todayK })) + "</p>" : "");
+    var body = hasData
+      ? [
+          statNode(String(st.exerciseDaysTotal), p.activeDays + " (" + p.thisWeek + ": " + st.exerciseDaysWeek + ")"),
+          statNode(String(st.exercises), p.exercises),
+          E("div", { className: "stat", children: [E("div", { className: "lbl", text: p.feeling }), feelTrendNode(st.trend)] }),
+          state.goal ? E("div", { className: "stat", children: [E("div", { className: "lbl", text: p.goalLabel }), E("div", { className: "goal-stat", text: state.goal })] }) : null,
+          st.firstK ? E("p", { className: "screen-intro", text: tpl(p.range, { from: st.firstK, to: st.todayK }) }) : null,
+        ]
+      : [E("div", { className: "banner", text: p.none })];
 
-    c.innerHTML =
-      '<div class="screen" data-c="blue">' +
-      '<h2 class="screen-title">' + esc(p.title) + "</h2>" +
-      '<p class="screen-intro">' + esc(p.intro) + "</p>" +
-      (hasData ? body : '<div class="banner">' + esc(p.none) + "</div>") +
-      '<button class="share-btn" id="shareBtn">📤 ' + esc(p.share) + "</button>" +
-      '<p class="privacy-note">🔒 ' + esc(p.privacy) + "</p></div>";
-
-    el("shareBtn").addEventListener("click", function () {
+    var shareButton = E("button", { className: "share-btn", id: "shareBtn", text: p.share });
+    shareButton.addEventListener("click", function () {
       var text = progressShareText(p, st);
       if (navigator.share) {
         navigator.share({ title: p.shareTitle, text: text }).catch(function (err) {
-          if (!err || err.name !== "AbortError") copyText(text, p); // real failure (not a user cancel) -> copy
+          if (!err || err.name !== "AbortError") copyText(text, p);
         });
       } else {
         copyText(text, p);
       }
     });
+    var clearButton = E("button", { className: "secondary-btn", text: p.clear });
+    clearButton.addEventListener("click", function () {
+      if (!window.confirm(p.clearConfirm)) return;
+      var preferredLang = lang;
+      state = sanitizeState({ lang: preferredLang });
+      save();
+      showToast(p.cleared);
+      route();
+    });
+
+    c.appendChild(
+      E("div", {
+        className: "screen-body",
+        attrs: { "data-c": "blue" },
+        children: [E("h2", { className: "screen-title", text: p.title }), E("p", { className: "screen-intro", text: p.intro }), body, shareButton, clearButton, E("p", { className: "privacy-note", text: p.privacy })],
+      })
+    );
   }
 
-  /* ---------------- toast ---------------- */
+  function statNode(num, label) {
+    return E("div", { className: "stat", children: [E("div", { className: "num", text: num }), E("div", { className: "lbl", text: label })] });
+  }
+
   var toastTimer;
   function showToast(msg) {
     var t = el("toast");
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+    toastTimer = setTimeout(function () {
+      t.classList.remove("show");
+    }, 2600);
   }
 
-  /* ---------------- PWA install ---------------- */
   var deferredPrompt = null;
-  // iOS/iPadOS never fires beforeinstallprompt. Detect it robustly — iPadOS Safari reports a Mac
-  // user-agent, so also treat a touch-capable MacIntel as iPad — and only when not yet installed.
+
   function iosNeedsHint() {
     var ua = navigator.userAgent || "";
     var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
     var standalone = ("standalone" in navigator && navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
     return ios && !standalone;
   }
+
   function wireInstall() {
-    var hint = el("installHint"), btn = el("installBtn");
+    var hint = el("installHint");
+    var btn = el("installBtn");
     if (!hint || !btn) return;
     if (deferredPrompt) hint.classList.add("show");
     btn.addEventListener("click", function () {
@@ -412,6 +669,7 @@
       hint.classList.remove("show");
     });
   }
+
   window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault();
     deferredPrompt = e;
@@ -419,21 +677,26 @@
     if (hint) hint.classList.add("show");
   });
 
-  /* ---------------- boot ---------------- */
   window.addEventListener("hashchange", route);
   document.addEventListener("DOMContentLoaded", function () {
     document.documentElement.lang = lang;
-    el("back").addEventListener("click", function () { if (currentRoute() !== "home") location.hash = "#/home"; });
+    el("back").addEventListener("click", function () {
+      if (currentRoute() !== "home") location.hash = "#/home";
+    });
     var lb = el("langBtn");
-    if (lb) lb.addEventListener("click", function () { setLang(nextLang()); });
+    if (lb) {
+      lb.addEventListener("click", function () {
+        setLang(nextLang());
+      });
+    }
     applyChrome();
     route();
     if (/[?&]from=magnet/.test(location.search)) {
-      var magnetMsg = C.ui.toastMagnet; // capture by value so a fast language toggle can't swap it
-      setTimeout(function () { showToast(magnetMsg); }, 500);
+      var magnetMsg = C.ui.toastMagnet;
+      setTimeout(function () {
+        showToast(magnetMsg);
+      }, 500);
     }
-    // Ask the browser to keep our on-device data (resists storage eviction). Chrome/Firefox
-    // honour this; Safari ignores it (there, installing to the home screen is the durable path).
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
     if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
       navigator.serviceWorker.register("sw.js").catch(function () {});

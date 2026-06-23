@@ -1,13 +1,9 @@
 /*
- * content.js — all patient-facing text in English (en) and Dutch (nl).
+ * content.js - all patient-facing text in English and Dutch.
  *
- * Written for LOW HEALTH LITERACY: short sentences, plain words, one idea per line.
- * Evidence base: pain neuroscience education (PNE) + "stay active" first-line guidance
+ * Written for low health literacy: short sentences, plain words, one idea per line.
+ * Evidence base: pain neuroscience education plus "stay active" first-line guidance
  * for chronic non-specific low back pain.
- *
- * Both languages share the SAME structure and the SAME exercise ids, so the app can swap
- * languages live and the animations / flare routine keep matching. Edit or add a language
- * here without touching app logic.
  */
 window.CONTENT = {
   en: {
@@ -37,7 +33,7 @@ window.CONTENT = {
         title: "Move a little, often",
         intro: "Gentle is good. Do what you can today, even a few movements help. Hold a chair if you feel unsteady, and use a bed if the floor is hard. When one feels easy, do a few more.",
         progress: "{d} of {t} done today",
-        complete: " 🎉 nice work!",
+        complete: ". Nice work.",
         markDone: "Mark as done",
         done: "Done",
       },
@@ -51,7 +47,7 @@ window.CONTENT = {
         intro: "What do you want to get back to? Pick one, or write your own. It will sit on your home screen to keep you going.",
         placeholder: "I want to...",
         save: "Save my goal",
-        saved: "Goal saved ⭐",
+        saved: "Goal saved",
         cleared: "Goal cleared",
       },
       safety: { title: "When to get checked" },
@@ -67,11 +63,14 @@ window.CONTENT = {
         range: "From {from} to {to}",
         none: "No activity yet. Come back after a few days of exercises.",
         share: "Share with my physio",
-        copied: "Copied — paste it to your physio",
+        copied: "Copied. Paste it to your physio.",
+        clear: "Clear my data",
+        clearConfirm: "This clears your goal, exercises and check-ins from this browser. Continue?",
+        cleared: "Progress cleared",
         privacy: "This stays on your phone until you choose to share it.",
-        shareTitle: "Back on Track — my progress",
+        shareTitle: "Back on Track progress",
       },
-      toastMagnet: "Opened from your magnet ✓",
+      toastMagnet: "Opened from your magnet.",
       disclaimer:
         "This app is for older adults with long-term back pain who worry that moving will cause harm, after a clinician has checked it. It supports, but does not replace, your physiotherapist or doctor. If you feel worse or worried, talk to them.",
       langName: "EN",
@@ -122,11 +121,11 @@ window.CONTENT = {
     },
     goalPrompts: ["Play with my grandchildren", "Walk to the shops on my own", "Get up from my chair easily", "Get back to gardening", "Sleep through the night", "Keep living in my own home"],
     feelFaces: [
-      { value: 0, emoji: "😖", label: "Awful" },
-      { value: 1, emoji: "🙁", label: "Sore" },
-      { value: 2, emoji: "😐", label: "Okay" },
-      { value: 3, emoji: "🙂", label: "Good" },
-      { value: 4, emoji: "😄", label: "Great" },
+      { value: 0, mark: "0", label: "Awful" },
+      { value: 1, mark: "1", label: "Sore" },
+      { value: 2, mark: "2", label: "Okay" },
+      { value: 3, mark: "3", label: "Good" },
+      { value: 4, mark: "4", label: "Great" },
     ],
   },
 
@@ -157,7 +156,7 @@ window.CONTENT = {
         title: "Beweeg een beetje, vaak",
         intro: "Rustig is goed. Doe wat je vandaag kunt, ook een paar bewegingen helpen. Houd een stoel vast als je je onzeker voelt, en gebruik een bed als de vloer lastig is. Als iets makkelijk voelt, doe er dan een paar meer.",
         progress: "{d} van {t} gedaan vandaag",
-        complete: " 🎉 goed gedaan!",
+        complete: ". Goed gedaan.",
         markDone: "Markeer als gedaan",
         done: "Gedaan",
       },
@@ -171,7 +170,7 @@ window.CONTENT = {
         intro: "Wat wil je weer kunnen doen? Kies er één, of schrijf je eigen. Het komt op je beginscherm om je te motiveren.",
         placeholder: "Ik wil...",
         save: "Bewaar mijn doel",
-        saved: "Doel bewaard ⭐",
+        saved: "Doel bewaard",
         cleared: "Doel gewist",
       },
       safety: { title: "Wanneer naar de dokter" },
@@ -187,11 +186,14 @@ window.CONTENT = {
         range: "Van {from} tot {to}",
         none: "Nog geen activiteit. Kom terug na een paar dagen oefeningen.",
         share: "Deel met mijn fysio",
-        copied: "Gekopieerd — plak het naar je fysio",
+        copied: "Gekopieerd. Plak het naar je fysio.",
+        clear: "Wis mijn gegevens",
+        clearConfirm: "Dit wist je doel, oefeningen en check-ins uit deze browser. Doorgaan?",
+        cleared: "Voortgang gewist",
         privacy: "Dit blijft op je telefoon totdat je het zelf deelt.",
-        shareTitle: "Back on Track — mijn voortgang",
+        shareTitle: "Back on Track voortgang",
       },
-      toastMagnet: "Geopend via je magneet ✓",
+      toastMagnet: "Geopend via je magneet.",
       disclaimer:
         "Deze app is voor oudere mensen met langdurige rugpijn die bang zijn dat bewegen schade veroorzaakt, nadat een zorgverlener het heeft nagekeken. Hij ondersteunt je fysiotherapeut of dokter, maar vervangt hen niet. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
       langName: "NL",
@@ -242,11 +244,11 @@ window.CONTENT = {
     },
     goalPrompts: ["Spelen met mijn kleinkinderen", "Zelf naar de winkel lopen", "Makkelijk uit mijn stoel opstaan", "Weer kunnen tuinieren", "Doorslapen 's nachts", "Zelfstandig in mijn eigen huis blijven wonen"],
     feelFaces: [
-      { value: 0, emoji: "😖", label: "Slecht" },
-      { value: 1, emoji: "🙁", label: "Pijnlijk" },
-      { value: 2, emoji: "😐", label: "Gaat wel" },
-      { value: 3, emoji: "🙂", label: "Goed" },
-      { value: 4, emoji: "😄", label: "Top" },
+      { value: 0, mark: "0", label: "Slecht" },
+      { value: 1, mark: "1", label: "Pijnlijk" },
+      { value: 2, mark: "2", label: "Gaat wel" },
+      { value: 3, mark: "3", label: "Goed" },
+      { value: 4, mark: "4", label: "Top" },
     ],
   },
 };

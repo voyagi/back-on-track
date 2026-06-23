@@ -1,57 +1,51 @@
-# Testing checklist — the real-world tests only you can do
+# Testing Checklist
 
-Most of the app is verified in an automated browser (offline mode, the language toggle,
-the animations playing, the share button, corrupted-data resilience, no console errors).
-The items below need a **real phone, a printer, or a physiotherapist** — I cannot do them,
-so please run through these before you rely on the toolkit with a real patient.
+Automated checks cover syntax, content structure, basic browser rendering, QR generation, local-storage resilience, and accessibility scans. The checks below still require a real phone, printer, clinician, or tutor.
 
-## 1. Print and scan a magnet (highest priority)
+## Print And Scan Magnets
 
-This is the single riskiest unknown: I optimized the QR codes for print but never printed one.
+1. Open `magnets.html`.
+2. Choose English or Dutch.
+3. Confirm the app address.
+4. Print at the intended 60 mm by 60 mm size on the real magnet material.
+5. Scan all five QR codes with a phone camera.
+6. Confirm each QR opens the correct app section in the selected language.
 
-1. Open `magnets.html` on a computer, pick the language, click **Print / Save PDF**.
-2. Print at the intended size (60 × 60 mm) on the actual magnet material you will use.
-3. Scan each of the five QR codes with a phone camera (try both an iPhone and an Android if you can).
-4. Confirm each opens the **correct section** of the app, in the **correct language** (a Dutch magnet should open the app in Dutch).
+If scanning is unreliable, use a matte finish, print slightly larger, or keep more white space around the QR panel.
 
-If a code does not scan reliably: try a matte (non-glossy) finish, print slightly larger, and keep a white border around the code.
+## Install On iPhone
 
-## 2. Install on a real iPhone
+1. Open the app in Safari.
+2. Use Share, then Add to Home Screen.
+3. Confirm the icon and app name look right.
+4. Open it from the home screen and confirm it runs without Safari bars.
 
-1. Open https://voyagi.github.io/back-on-track/ in **Safari** on an iPhone.
-2. A tip should appear: tap the **Share** button, then **Add to Home Screen**.
-3. Confirm the home-screen icon and name ("Back on Track") look right.
-4. Open it from the home screen and confirm it runs full-screen (no Safari bars).
+This matters because installed iOS web apps usually keep local data more reliably than ordinary Safari tabs.
 
-Installing matters for more than looks: on iOS, an installed app's saved data is far more durable
-than a plain Safari tab (Safari can clear a tab's data after ~7 days of no use). For a multi-week
-trial, **have the patient add it to their home screen**.
+## Install On Android
 
-## 3. Install on Android
+Open the app in Chrome and use the install prompt or browser menu. Confirm it opens as a standalone app.
 
-Open in Chrome. You should see an "Add this to your home screen" prompt, or use the browser
-menu → Install / Add to Home screen. Confirm it installs and opens standalone.
+## Offline Use
 
-## 4. Offline on a real device
+After first load or install, turn on airplane mode and open the app again. Confirm the home screen, exercises, lessons, and magnets link behavior still work.
 
-(Automated test passed, but confirm on the actual phone.) After installing, turn on airplane mode,
-open the app, and confirm it still opens and the exercises/lessons work.
+## Native Share
 
-## 5. Native share on a real device
+Open My progress and choose Share with my physio. On a phone, confirm the native share sheet appears with useful text. On desktop, confirm it copies to clipboard.
 
-Open **My progress**, tap **Share with my physio**, and confirm the phone's share sheet appears
-with the summary text (WhatsApp, email, etc.). On a desktop without share support it copies to the
-clipboard instead.
+## Data Retention
 
-## 6. Data persistence across the trial
+Use the app over several days, then reopen it after a week. Confirm exercise days, feeling trend, and goal remain unless Clear my data is used.
 
-Use the app on a few different days, then reopen it after a week and confirm the progress (active
-days, feeling trend) is still there. If it ever disappears on iOS, the cause is almost certainly
-that it was used in a Safari tab rather than installed to the home screen (see step 2).
+## Clinical Sign-Off
 
-## 7. Clinical sign-off (the grade depends on this)
+Ask a physiotherapist, tutor, or qualified reviewer to confirm:
 
-I am not a physiotherapist. See `CLINICAL-BASIS.md` for the evidence each exercise, red flag, and
-education message is grounded in, but the final check against **your Fontys course material and a
-tutor** is yours to do. Confirm the exercise selection, the rep dosages, the red-flag wording, and
-the pain-education framing are what your programme expects.
+- Exercise choices.
+- Repetition ranges.
+- Safety caveats.
+- Red-flag wording.
+- Pain education framing.
+
+Record any required changes before using the toolkit with a real patient.
