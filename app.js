@@ -11,6 +11,95 @@
   var STORE_KEY = "bot.v1";
   var ANIM = Object.freeze(window.EXERCISE_ANIM || {});
 
+  /*
+   * Friendly inline-SVG icons. Each is paired with a word label in the UI,
+   * never shown alone, so meaning never depends on the icon (WCAG 1.4.1).
+   * 24x24, heavy round strokes so they stay legible for low-vision eyes.
+   */
+  var ICO_OPEN =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
+  var ICONS = {
+    home: ICO_OPEN + '<path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M9.8 19.5V14h4.4v5.5"/></svg>',
+    move:
+      ICO_OPEN +
+      '<circle cx="14" cy="4.4" r="2.3" fill="currentColor" stroke="none"/><path d="M14 6.8 11.7 13"/><path d="M11.7 13 14 20"/><path d="M11.7 13 8 18.6"/><path d="M12.7 8.4 16.6 10.6"/><path d="M12.7 8.4 9.2 9.7"/></svg>',
+    learn:
+      ICO_OPEN +
+      '<path d="M12 6.4C9.8 5 6.4 4.6 4 5.2v12.6c2.4-.6 5.8-.2 8 1.2"/><path d="M12 6.4C14.2 5 17.6 4.6 20 5.2v12.6c-2.4-.6-5.8-.2-8 1.2"/><path d="M12 6.4V19"/></svg>',
+    goal:
+      ICO_OPEN +
+      '<path d="M12 20.2 5 13.5a4.4 4.4 0 0 1 6.2-6.2l.8.8.8-.8a4.4 4.4 0 0 1 6.2 6.2Z"/></svg>',
+    plan:
+      ICO_OPEN +
+      '<circle cx="16" cy="8" r="2.7"/><path d="M16 3.4v1.3M20.6 8h-1.3M19.2 4.8l-.9.9M12.8 4.8l.9.9"/><path d="M7 18.6h7.9a3.1 3.1 0 0 0 .3-6.2 3.9 3.9 0 0 0-7.5-.7A3.2 3.2 0 0 0 7 18.6Z"/></svg>',
+    safe:
+      ICO_OPEN +
+      '<path d="M12 3.4 5.6 5.8v5.1c0 3.9 2.7 6.8 6.4 8.3 3.7-1.5 6.4-4.4 6.4-8.3V5.8Z"/><path d="M9 11.6 11.2 13.8 15.2 9.5"/></svg>',
+    back: ICO_OPEN + '<path d="M14 5.5 7.5 12 14 18.5"/><path d="M7.5 12H19"/></svg>',
+    globe:
+      ICO_OPEN +
+      '<circle cx="12" cy="12" r="8.3"/><path d="M3.7 12h16.6"/><path d="M12 3.7c2.3 2.3 3.4 5.1 3.4 8.3s-1.1 6-3.4 8.3c-2.3-2.3-3.4-5.1-3.4-8.3S9.7 6 12 3.7Z"/></svg>',
+    check: ICO_OPEN + '<circle cx="12" cy="12" r="8.6"/><path d="M8.1 12.2 11 15.1l5-5.6"/></svg>',
+    share:
+      ICO_OPEN +
+      '<circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.3 10.8 15.7 7.2"/><path d="M8.3 13.2 15.7 16.8"/></svg>',
+    phone:
+      ICO_OPEN +
+      '<path d="M6.4 3.8h3l1.4 4-2 1.4a11 11 0 0 0 4.8 4.8l1.4-2 4 1.4v3a1.6 1.6 0 0 1-1.8 1.6C12.5 21.3 5 16 4 7.2A1.6 1.6 0 0 1 6.4 3.8Z"/></svg>',
+    chart: ICO_OPEN + '<path d="M4 4v16h16"/><path d="M8 16.5v-3.5"/><path d="M12 16.5V8"/><path d="M16 16.5v-6"/></svg>',
+  };
+
+  function svgNode(markup, className) {
+    var doc = new DOMParser().parseFromString(markup, "image/svg+xml");
+    var svg = doc.documentElement;
+    if (!svg || svg.nodeName.toLowerCase() !== "svg") return null;
+    var node = document.importNode(svg, true);
+    if (className) node.setAttribute("class", className);
+    node.setAttribute("aria-hidden", "true");
+    node.setAttribute("focusable", "false");
+    return node;
+  }
+
+  function icon(name, className) {
+    if (!ICONS[name]) return null;
+    return svgNode(ICONS[name], "icon" + (className ? " " + className : ""));
+  }
+
+  function iconChip(chipClass, name) {
+    return E("span", { className: chipClass, attrs: { "aria-hidden": "true" }, children: [icon(name)] });
+  }
+
+  /* Five drawn mood faces replace the bare numbers 0-4. Valence is the mouth curve. */
+  var FACE_MOUTHS = [
+    "M16 32 Q24 24.5 32 32",
+    "M16 31 Q24 27.5 32 31",
+    "M16 30 H32",
+    "M16 29 Q24 35 32 29",
+    "M15 28 Q24 38.5 33 28",
+  ];
+
+  function faceMarkup(value) {
+    var v = value >= 0 && value <= 4 ? value : 2;
+    var mouth = FACE_MOUTHS[v];
+    var cheeks =
+      v === 4
+        ? '<circle cx="12.5" cy="30" r="2" fill="currentColor" stroke="none" opacity="0.16"/><circle cx="35.5" cy="30" r="2" fill="currentColor" stroke="none" opacity="0.16"/>'
+        : "";
+    return (
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">' +
+      '<circle class="face-bg" cx="24" cy="24" r="22"/>' +
+      '<circle cx="18" cy="21" r="2.2" fill="currentColor" stroke="none"/>' +
+      '<circle cx="30" cy="21" r="2.2" fill="currentColor" stroke="none"/>' +
+      cheeks +
+      '<path d="' + mouth + '" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+      "</svg>"
+    );
+  }
+
+  function faceNode(value, className) {
+    return svgNode(faceMarkup(value), "face-graphic m" + (value >= 0 && value <= 4 ? value : 2) + (className ? " " + className : ""));
+  }
+
   function load() {
     try {
       return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
@@ -160,8 +249,15 @@
     return E("section", { className: className, children: children });
   }
 
-  function token(label) {
-    return E("span", { className: "token", attrs: { "aria-hidden": "true" }, text: label });
+  function token() {
+    return E("span", { className: "token", attrs: { "aria-hidden": "true" }, children: [icon("goal")] });
+  }
+
+  function screenTitle(iconName, text) {
+    return E("h2", {
+      className: "screen-title",
+      children: [iconName ? iconChip("title-icon", iconName) : null, E("span", { text: text })],
+    });
   }
 
   function exerciseById(id) {
@@ -194,9 +290,35 @@
     var lb = el("langBtn");
     if (lb) {
       var nn = window.CONTENT[nextLang()].ui.langName || nextLang().toUpperCase();
-      lb.textContent = nn;
+      var lt = lb.querySelector(".lang-text");
+      if (lt) lt.textContent = nn;
+      else lb.textContent = nn;
       lb.setAttribute("title", C.ui.switchTitle);
       lb.setAttribute("aria-label", nn + ". " + C.ui.switchTitle);
+    }
+  }
+
+  function initChromeIcons() {
+    var navIcon = { home: "home", today: "move", learn: "learn", goal: "goal" };
+    Array.prototype.forEach.call(document.querySelectorAll(".tabbar a"), function (a) {
+      var holder = a.querySelector(".nav-code");
+      var name = navIcon[a.getAttribute("data-tab")];
+      if (holder && name) {
+        holder.textContent = "";
+        var ic = icon(name);
+        if (ic) holder.appendChild(ic);
+      }
+    });
+    var back = el("back");
+    if (back) {
+      back.textContent = "";
+      var b = icon("back");
+      if (b) back.appendChild(b);
+    }
+    var lb = el("langBtn");
+    if (lb && !lb.querySelector(".lang-icon")) {
+      var g = icon("globe", "lang-icon");
+      if (g) lb.insertBefore(g, lb.firstChild);
     }
   }
 
@@ -221,6 +343,7 @@
     el("back").classList.toggle("show", name !== "home");
 
     var container = el("screen");
+    container.className = "screen screen-" + name;
     container.replaceChildren();
     screens[name](container);
 
@@ -235,12 +358,12 @@
     window.scrollTo(0, 0);
   }
 
-  function tile(color, r, code, t, s) {
+  function tile(color, r, iconName, t, s) {
     return E("a", {
       className: "tile " + color,
       href: "#/" + r,
       children: [
-        E("span", { className: "tile-code", text: code }),
+        iconChip("tile-icon", iconName),
         E("span", {
           className: "tile-copy",
           children: [
@@ -281,7 +404,7 @@
           className: "goal-pinned" + (goal ? "" : " empty"),
           href: "#/goal",
           children: [
-            token("G"),
+            token(),
             E("span", {
               className: "goal-copy",
               children: [
@@ -297,15 +420,15 @@
       E("div", {
         className: "tiles",
         children: [
-          tile("green", "today", "MOVE", T.today.t, T.today.s),
-          tile("blue", "learn", "LEARN", T.learn.t, T.learn.s),
-          tile("amber", "flare", "PLAN", T.flare.t, T.flare.s),
-          tile("purple", "goal", "WHY", T.goal.t, T.goal.s),
+          tile("move", "today", "move", T.today.t, T.today.s),
+          tile("learn", "learn", "learn", T.learn.t, T.learn.s),
+          tile("plan", "flare", "plan", T.flare.t, T.flare.s),
+          tile("goal", "goal", "goal", T.goal.t, T.goal.s),
           E("a", {
-            className: "tile red wide",
+            className: "tile safe wide",
             href: "#/safety",
             children: [
-              E("span", { className: "tile-code", text: "SAFE" }),
+              iconChip("tile-icon", "safe"),
               E("span", {
                 className: "tile-copy",
                 children: [E("span", { className: "tile-title", text: T.safety.t }), E("span", { className: "tile-sub", text: T.safety.s })],
@@ -315,7 +438,11 @@
         ],
       }),
       renderCheckin(),
-      E("a", { className: "progress-link", href: "#/progress", text: C.ui.progress.link }),
+      E("a", {
+        className: "progress-link",
+        href: "#/progress",
+        children: [icon("chart"), E("span", { text: C.ui.progress.link })],
+      }),
       E("p", { className: "disclaimer", text: C.ui.disclaimer }),
     ]);
 
@@ -330,7 +457,7 @@
           "data-feel": String(f.value),
           "aria-pressed": String(today().feel === f.value),
         },
-        children: [E("span", { className: "face-mark", text: f.mark }), E("span", { className: "face-label", text: f.label })],
+        children: [faceNode(f.value), E("span", { className: "face-label", text: f.label })],
       });
     });
 
@@ -354,10 +481,10 @@
     var doneIds = today().done;
     var total = C.exercises.length;
     var u = C.ui.today;
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "green" } });
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "move" } });
 
     append(wrap, [
-      E("h2", { className: "screen-title", text: u.title }),
+      screenTitle("move", u.title),
       E("p", { className: "screen-intro", text: u.intro }),
       E("div", { className: "today-progress", text: tpl(u.progress, { d: doneIds.length, t: total }) + (doneIds.length >= total ? u.complete : "") }),
     ]);
@@ -367,7 +494,7 @@
       var button = E("button", {
         className: "done-btn",
         attrs: { "data-ex": ex.id, "aria-pressed": String(isDone) },
-        text: isDone ? u.done : u.markDone,
+        children: [icon("check"), E("span", { text: isDone ? u.done : u.markDone })],
       });
       button.addEventListener("click", function () {
         var arr = today().done;
@@ -396,14 +523,23 @@
   }
 
   function renderLearn(c) {
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "blue" } });
-    append(wrap, [E("h2", { className: "screen-title", text: C.ui.learn.title }), E("p", { className: "screen-intro", text: C.ui.learn.intro })]);
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "learn" } });
+    append(wrap, [screenTitle("learn", C.ui.learn.title), E("p", { className: "screen-intro", text: C.ui.learn.intro })]);
     C.lessons.forEach(function (l, i) {
       append(wrap, [
         E("details", {
           className: "card lesson",
           attrs: i === 0 ? { open: "" } : null,
-          children: [E("summary", { text: l.title }), E("p", { text: l.body })],
+          children: [
+            E("summary", {
+              children: [
+                iconChip("lesson-dot", "learn"),
+                E("span", { className: "lesson-text", text: l.title }),
+                E("span", { className: "lesson-mark", attrs: { "aria-hidden": "true" } }),
+              ],
+            }),
+            E("p", { text: l.body }),
+          ],
         }),
       ]);
     });
@@ -412,10 +548,10 @@
 
   function renderFlare(c) {
     var u = C.ui.flare;
-    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "amber" } });
+    var wrap = E("div", { className: "screen-body", attrs: { "data-c": "plan" } });
     append(wrap, [
-      E("h2", { className: "screen-title", text: u.title }),
-      E("div", { className: "banner", text: C.flare.reassure }),
+      screenTitle("plan", u.title),
+      E("div", { className: "banner reassure", text: C.flare.reassure }),
       E("h3", { className: "section-heading", text: u.tryThis }),
       E("ol", {
         className: "steps",
@@ -456,7 +592,7 @@
       });
       return b;
     });
-    var saveButton = E("button", { className: "primary-btn", id: "saveGoal", text: u.save });
+    var saveButton = E("button", { className: "primary-btn", id: "saveGoal", children: [icon("goal"), E("span", { text: u.save })] });
     saveButton.addEventListener("click", function () {
       var v = input.value.trim().slice(0, 80);
       state.goal = v;
@@ -468,8 +604,8 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "purple" },
-        children: [E("h2", { className: "screen-title", text: u.title }), E("p", { className: "screen-intro", text: u.intro }), input, E("div", { className: "chips", children: chips }), saveButton],
+        attrs: { "data-c": "goal" },
+        children: [screenTitle("goal", u.title), E("p", { className: "screen-intro", text: u.intro }), input, E("div", { className: "chips", children: chips }), saveButton],
       })
     );
   }
@@ -478,9 +614,9 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "red" },
+        attrs: { "data-c": "safe" },
         children: [
-          E("h2", { className: "screen-title", text: C.ui.safety.title }),
+          screenTitle("safe", C.ui.safety.title),
           E("p", { className: "screen-intro", text: C.redFlags.intro }),
           E("ul", {
             className: "flags",
@@ -488,7 +624,7 @@
               return E("li", { text: f });
             }),
           }),
-          E("div", { className: "action-box", text: C.redFlags.action }),
+          E("div", { className: "action-box", children: [icon("phone"), E("span", { text: C.redFlags.action })] }),
           E("p", { className: "screen-intro safety-net", text: C.redFlags.cantCatch }),
           E("p", { className: "disclaimer", text: C.ui.disclaimer }),
         ],
@@ -534,7 +670,14 @@
       className: "feel-trend",
       children: trend.map(function (v) {
         var f = feelItem(v);
-        return E("span", { className: f ? "" : "none", text: f ? f.mark : "-" });
+        if (!f) return E("span", { className: "none", attrs: { "aria-hidden": "true" }, text: "-" });
+        var node = faceNode(f.value, "trend-face");
+        if (node) {
+          node.setAttribute("role", "img");
+          node.setAttribute("aria-label", f.label);
+          node.removeAttribute("aria-hidden");
+        }
+        return node;
       }),
     });
   }
@@ -603,7 +746,7 @@
         ]
       : [E("div", { className: "banner", text: p.none })];
 
-    var shareButton = E("button", { className: "share-btn", id: "shareBtn", text: p.share });
+    var shareButton = E("button", { className: "share-btn", id: "shareBtn", children: [icon("share"), E("span", { text: p.share })] });
     shareButton.addEventListener("click", function () {
       var text = progressShareText(p, st);
       if (navigator.share) {
@@ -627,8 +770,8 @@
     c.appendChild(
       E("div", {
         className: "screen-body",
-        attrs: { "data-c": "blue" },
-        children: [E("h2", { className: "screen-title", text: p.title }), E("p", { className: "screen-intro", text: p.intro }), body, shareButton, clearButton, E("p", { className: "privacy-note", text: p.privacy })],
+        attrs: { "data-c": "learn" },
+        children: [screenTitle("chart", p.title), E("p", { className: "screen-intro", text: p.intro }), body, shareButton, clearButton, E("p", { className: "privacy-note", text: p.privacy })],
       })
     );
   }
@@ -689,6 +832,7 @@
         setLang(nextLang());
       });
     }
+    initChromeIcons();
     applyChrome();
     route();
     if (/[?&]from=magnet/.test(location.search)) {
