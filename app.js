@@ -457,7 +457,7 @@
           "data-feel": String(f.value),
           "aria-pressed": String(today().feel === f.value),
         },
-        children: [faceNode(f.value), E("span", { className: "face-label", text: f.label })],
+        children: [faceNode(f.value) || E("span", { className: "face-fallback", attrs: { "aria-hidden": "true" }, text: f.mark }), E("span", { className: "face-label", text: f.label })],
       });
     });
 
@@ -469,9 +469,11 @@
 
     Array.prototype.forEach.call(wrap.querySelectorAll(".face"), function (b) {
       b.addEventListener("click", function () {
-        today().feel = parseInt(b.getAttribute("data-feel"), 10);
+        var v = parseInt(b.getAttribute("data-feel"), 10);
+        today().feel = v;
         save();
         route();
+        if (v <= 1 && C.ui.lowMood) showToast(C.ui.lowMood);
       });
     });
     return wrap;
@@ -499,10 +501,13 @@
       button.addEventListener("click", function () {
         var arr = today().done;
         var idx = arr.indexOf(ex.id);
-        if (idx === -1) arr.push(ex.id);
+        var added = idx === -1;
+        var first = added && arr.length === 0;
+        if (added) arr.push(ex.id);
         else arr.splice(idx, 1);
         save();
         route();
+        if (first && u.doneToast) showToast(u.doneToast);
       });
 
       append(wrap, [
@@ -672,11 +677,10 @@
         var f = feelItem(v);
         if (!f) return E("span", { className: "none", attrs: { "aria-hidden": "true" }, text: "-" });
         var node = faceNode(f.value, "trend-face");
-        if (node) {
-          node.setAttribute("role", "img");
-          node.setAttribute("aria-label", f.label);
-          node.removeAttribute("aria-hidden");
-        }
+        if (!node) return E("span", { className: "none", attrs: { "aria-hidden": "true" }, text: "-" });
+        node.setAttribute("role", "img");
+        node.setAttribute("aria-label", f.label);
+        node.removeAttribute("aria-hidden");
         return node;
       }),
     });
