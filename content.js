@@ -75,6 +75,8 @@ window.CONTENT = {
       lowMood: "Sorry it's a rough one today. Be gentle with yourself.",
       disclaimer:
         "This app is for older adults with long-term back pain who worry that moving will cause harm, after a clinician has checked it. It supports, but does not replace, your physiotherapist or doctor. If you feel worse or worried, talk to them.",
+      themeToDark: "Switch to dark mode",
+      themeToLight: "Switch to light mode",
       langName: "EN",
       switchTitle: "Schakel naar Nederlands",
     },
@@ -200,6 +202,8 @@ window.CONTENT = {
       lowMood: "Wat een rotdag, vervelend. Wees lief voor jezelf.",
       disclaimer:
         "Deze app is voor oudere mensen met langdurige rugpijn die bang zijn dat bewegen schade veroorzaakt, nadat een zorgverlener het heeft nagekeken. Hij ondersteunt je fysiotherapeut of dokter, maar vervangt hen niet. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
+      themeToDark: "Schakel naar donkere modus",
+      themeToLight: "Schakel naar lichte modus",
       langName: "NL",
       switchTitle: "Switch to English",
     },
