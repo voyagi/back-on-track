@@ -34,8 +34,9 @@ window.CONTENT = {
         intro: "Gentle is good. Do what you can today, even a few movements help. Hold a chair if you feel unsteady, and use a bed if the floor is hard. When one feels easy, do a few more.",
         progress: "{d} of {t} done today",
         complete: ". Nice work.",
-        markDone: "Mark as done",
-        done: "Done",
+        markDone: "I did this",
+        done: "Done!",
+        doneToast: "That counts. Every bit helps.",
       },
       learn: {
         title: "Hurt isn't harm",
@@ -71,6 +72,7 @@ window.CONTENT = {
         shareTitle: "Back on Track progress",
       },
       toastMagnet: "Opened from your magnet.",
+      lowMood: "Sorry it's a rough one today. Be gentle with yourself.",
       disclaimer:
         "This app is for older adults with long-term back pain who worry that moving will cause harm, after a clinician has checked it. It supports, but does not replace, your physiotherapist or doctor. If you feel worse or worried, talk to them.",
       langName: "EN",
@@ -157,8 +159,9 @@ window.CONTENT = {
         intro: "Rustig is goed. Doe wat je vandaag kunt, ook een paar bewegingen helpen. Houd een stoel vast als je je onzeker voelt, en gebruik een bed als de vloer lastig is. Als iets makkelijk voelt, doe er dan een paar meer.",
         progress: "{d} van {t} gedaan vandaag",
         complete: ". Goed gedaan.",
-        markDone: "Markeer als gedaan",
-        done: "Gedaan",
+        markDone: "Dit heb ik gedaan",
+        done: "Gedaan!",
+        doneToast: "Dat telt. Elke beweging helpt.",
       },
       learn: {
         title: "Pijn is geen schade",
@@ -194,6 +197,7 @@ window.CONTENT = {
         shareTitle: "Back on Track voortgang",
       },
       toastMagnet: "Geopend via je magneet.",
+      lowMood: "Wat een rotdag, vervelend. Wees lief voor jezelf.",
       disclaimer:
         "Deze app is voor oudere mensen met langdurige rugpijn die bang zijn dat bewegen schade veroorzaakt, nadat een zorgverlener het heeft nagekeken. Hij ondersteunt je fysiotherapeut of dokter, maar vervangt hen niet. Als je je slechter voelt of zorgen hebt, bespreek het dan met hen.",
       langName: "NL",
