@@ -47,6 +47,10 @@
       ICO_OPEN +
       '<path d="M6.4 3.8h3l1.4 4-2 1.4a11 11 0 0 0 4.8 4.8l1.4-2 4 1.4v3a1.6 1.6 0 0 1-1.8 1.6C12.5 21.3 5 16 4 7.2A1.6 1.6 0 0 1 6.4 3.8Z"/></svg>',
     chart: ICO_OPEN + '<path d="M4 4v16h16"/><path d="M8 16.5v-3.5"/><path d="M12 16.5V8"/><path d="M16 16.5v-6"/></svg>',
+    sun:
+      ICO_OPEN +
+      '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.3M12 19.1v2.3M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.3M19.1 12h2.3M4.4 19.6l1.6-1.6M18 6l1.6-1.6"/></svg>',
+    moon: ICO_OPEN + '<path d="M20.5 14.6A8.2 8.2 0 0 1 9.4 3.5 6.7 6.7 0 1 0 20.5 14.6Z"/></svg>',
   };
 
   function svgNode(markup, className) {
@@ -113,6 +117,7 @@
     if (typeof s.goal === "string") s.goal = s.goal.slice(0, 80);
     else delete s.goal;
     if (typeof s.lang !== "string") delete s.lang;
+    if (s.theme !== "light" && s.theme !== "dark") delete s.theme;
 
     var src = s.days && typeof s.days === "object" && !Array.isArray(s.days) ? s.days : {};
     var days = Object.create(null);
@@ -296,6 +301,7 @@
       lb.setAttribute("title", C.ui.switchTitle);
       lb.setAttribute("aria-label", nn + ". " + C.ui.switchTitle);
     }
+    updateThemeBtn();
   }
 
   function initChromeIcons() {
@@ -320,6 +326,34 @@
       var g = icon("globe", "lang-icon");
       if (g) lb.insertBefore(g, lb.firstChild);
     }
+  }
+
+  function effectiveTheme() {
+    if (window.BOT_THEME) return window.BOT_THEME.current();
+    return document.documentElement.getAttribute("data-theme") || "light";
+  }
+
+  function updateThemeBtn() {
+    var btn = el("themeBtn");
+    if (!btn) return;
+    var toDark = effectiveTheme() !== "dark";
+    var label = toDark ? C.ui.themeToDark : C.ui.themeToLight;
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+    var slot = btn.querySelector(".theme-icon-slot");
+    if (slot) {
+      slot.textContent = "";
+      var ic = icon(toDark ? "moon" : "sun");
+      if (ic) slot.appendChild(ic);
+    }
+  }
+
+  function toggleTheme() {
+    var next = effectiveTheme() === "dark" ? "light" : "dark";
+    state.theme = next;
+    save();
+    if (window.BOT_THEME) window.BOT_THEME.apply(next);
+    updateThemeBtn();
   }
 
   var screens = {
@@ -836,6 +870,9 @@
         setLang(nextLang());
       });
     }
+    var tb = el("themeBtn");
+    if (tb) tb.addEventListener("click", toggleTheme);
+    document.addEventListener("bot-theme-change", updateThemeBtn);
     initChromeIcons();
     applyChrome();
     route();
