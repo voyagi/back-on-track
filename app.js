@@ -872,6 +872,7 @@
     }
     var tb = el("themeBtn");
     if (tb) tb.addEventListener("click", toggleTheme);
+    document.addEventListener("bot-theme-change", updateThemeBtn);
     initChromeIcons();
     applyChrome();
     route();

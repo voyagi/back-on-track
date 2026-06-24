@@ -2,7 +2,7 @@
  * Service worker for offline use.
  * Bump CACHE when you change any cached file so users get the update.
  */
-var CACHE = "bot-v15";
+var CACHE = "bot-v16";
 var ASSETS = [
   ".",
   "index.html",

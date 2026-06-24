@@ -54,7 +54,13 @@
   if (window.matchMedia) {
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
     var onChange = function () {
-      if (storedPref() === "auto") apply("auto");
+      if (storedPref() !== "auto") return;
+      apply("auto");
+      try {
+        document.dispatchEvent(new Event("bot-theme-change"));
+      } catch (e) {
+        /* Engines without the Event constructor just skip the header refresh. */
+      }
     };
     if (mq.addEventListener) mq.addEventListener("change", onChange);
     else if (mq.addListener) mq.addListener(onChange);
