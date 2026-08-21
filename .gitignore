@@ -1,0 +1,18 @@
+node_modules/
+.env
+.env*
+*.log
+.DS_Store
+Thumbs.db
+.claude/
+.planning/
+.crash-buffers/
+redesign-preview/
+CLAUDE.md
+.Codex/reviews/
+coverage/
+.nyc_output/
+
+# Real patient notes and hand-in documents stay private.
+# Keep them in local files such as .local.md, .local.docx, and .local.pdf.
+*.local.*

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Back on Track">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1565c0"/>
+      <stop offset="1" stop-color="#2e7d32"/>
+    </linearGradient>
+  </defs>
+  <!-- Full-bleed background keeps it safe as a maskable icon -->
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <!-- A spine "in motion": curved column of vertebrae moving up and forward -->
+  <g fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round">
+    <path d="M168 372 C 168 300, 232 300, 244 244 C 256 188, 320 188, 332 140"/>
+  </g>
+  <g fill="#ffffff">
+    <circle cx="168" cy="372" r="20"/>
+    <circle cx="210" cy="312" r="18"/>
+    <circle cx="246" cy="256" r="18"/>
+    <circle cx="284" cy="200" r="18"/>
+  </g>
+  <!-- Arrowhead = progress / "on track" -->
+  <path d="M332 140 l 6 44 l -44 -6 z" fill="#ffffff"/>
+  <circle cx="332" cy="140" r="22" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Back on Track: printable fridge magnets</title>
+    <style>
+      :root {
+        --green: #2f6f57;
+        --blue: #285f8f;
+        --amber: #9a5a12;
+        --olive: #555f28;
+        --red: #9f2f2c;
+        --paper: #fffdf7;
+        --ink: #19201f;
+        --muted: #515c57;
+        --line: #d8d1c2;
+        --font: "Aptos", "Avenir Next", "Segoe UI", "Verdana", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f4f1ea;
+        color: var(--ink);
+        font-family: var(--font);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .bar {
+        display: grid;
+        grid-template-columns: auto minmax(220px, 1fr) auto auto;
+        gap: 10px;
+        align-items: end;
+        padding: 14px 18px;
+        color: #ffffff;
+        background: var(--ink);
+      }
+
+      .bar h1 {
+        grid-column: 1 / -1;
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .field {
+        display: grid;
+        gap: 5px;
+      }
+
+      .field label,
+      .langsel .lbl,
+      .hint {
+        font-size: 13px;
+        opacity: 0.82;
+      }
+
+      .bar input,
+      .bar button {
+        min-height: 42px;
+        border-radius: 8px;
+      }
+
+      .bar input {
+        width: 100%;
+        min-width: 220px;
+        padding: 9px 12px;
+        border: 2px solid transparent;
+      }
+
+      .bar input:invalid {
+        border-color: #f0b36a;
+      }
+
+      .bar button {
+        border: 0;
+        padding: 9px 14px;
+        color: var(--ink);
+        background: #ffffff;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .langsel {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .langbtn {
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+      }
+
+      .langbtn.active {
+        background: #ffffff;
+        color: var(--ink);
+      }
+
+      .hint {
+        grid-column: 1 / -1;
+        margin: 0;
+      }
+
+      .error {
+        grid-column: 1 / -1;
+        margin: 0;
+        color: #ffd9a8;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .sheet {
+        display: grid;
+        grid-template-columns: repeat(2, 60mm);
+        gap: 10mm;
+        justify-content: center;
+        padding: 14mm 0;
+      }
+
+      .magnet {
+        width: 60mm;
+        height: 60mm;
+        border: 1.5mm solid var(--c);
+        border-radius: 6mm;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: var(--paper);
+        box-shadow: 0 3mm 8mm rgba(25, 32, 31, 0.14);
+      }
+
+      .head {
+        flex: 0 0 auto;
+        min-height: 22mm;
+        padding: 4mm 4mm 3mm;
+        background: var(--c);
+        color: #ffffff;
+      }
+
+      .title {
+        font-size: 6.2mm;
+        font-weight: 850;
+        line-height: 1.04;
+      }
+
+      .sub {
+        margin-top: 1mm;
+        font-size: 3.2mm;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+
+      .panel {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 27mm 1fr;
+        gap: 3mm;
+        align-items: center;
+        padding: 2mm 3mm 3mm;
+      }
+
+      .qr,
+      .qr svg {
+        width: 27mm;
+        height: 27mm;
+      }
+
+      .scan {
+        color: #3d4642;
+        font-size: 3mm;
+        line-height: 1.2;
+      }
+
+      .scan b {
+        display: block;
+        color: var(--c);
+        font-size: 3.4mm;
+      }
+
+      .green {
+        --c: var(--green);
+      }
+
+      .blue {
+        --c: var(--blue);
+      }
+
+      .amber {
+        --c: var(--amber);
+      }
+
+      .goal {
+        --c: var(--olive);
+      }
+
+      .red {
+        --c: var(--red);
+      }
+
+      @media (max-width: 760px) {
+        .bar {
+          grid-template-columns: 1fr;
+          align-items: stretch;
+        }
+
+        .sheet {
+          grid-template-columns: 60mm;
+          padding: 10mm 0 18mm;
+        }
+      }
+
+      @media print {
+        .bar {
+          display: none;
+        }
+
+        body {
+          background: #ffffff;
+        }
+
+        .sheet {
+          padding: 8mm;
+        }
+
+        .magnet {
+          box-shadow: none;
+        }
+
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <h1>Fridge magnets</h1>
+      <div class="field">
+        <label for="base">App address</label>
+        <input id="base" type="url" required />
+      </div>
+      <button id="apply">Update QR codes</button>
+      <button id="print">Print or save PDF</button>
+      <div class="langsel">
+        <span class="lbl">Taal / Language</span>
+        <button id="langEn" class="langbtn" type="button">English</button>
+        <button id="langNl" class="langbtn" type="button">Nederlands</button>
+      </div>
+      <p class="hint">
+        Pick a language, then print. Each QR opens the matching section of the app in that language.
+      </p>
+      <p class="error" id="baseError" role="alert"></p>
+    </div>
+
+    <div class="sheet" id="sheet"></div>
+
+    <script src="vendor/qrcode.js"></script>
+    <script>
+      var BASE_URL = "https://voyagi.github.io/back-on-track/";
+      var DATA = {
+        en: {
+          scan: { a: "Scan me", b: "with your phone camera" },
+          magnets: [
+            { c: "green", route: "today", title: "Move a little, often", sub: "Today's gentle exercises" },
+            { c: "blue", route: "learn", title: "Hurt is not harm", sub: "Understand your back" },
+            { c: "amber", route: "flare", title: "Bad day?", sub: "Open your flare-up plan" },
+            { c: "goal", route: "goal", title: "Remember your why", sub: "Your goal" },
+            { c: "red", route: "safety", title: "When to get checked", sub: "Warning signs" },
+          ],
+        },
+        nl: {
+          scan: { a: "Scan mij", b: "met je telefooncamera" },
+          magnets: [
+            { c: "green", route: "today", title: "Beweeg een beetje, vaak", sub: "Oefeningen van vandaag" },
+            { c: "blue", route: "learn", title: "Pijn is geen schade", sub: "Begrijp je rug" },
+            { c: "amber", route: "flare", title: "Slechte dag?", sub: "Open je opvlamming-plan" },
+            { c: "goal", route: "goal", title: "Weet weer waarom", sub: "Jouw doel" },
+            { c: "red", route: "safety", title: "Wanneer naar de dokter", sub: "Waarschuwingstekens" },
+          ],
+        },
+      };
+      var lang = "en";
+
+      function textNode(text) {
+        return document.createTextNode(text);
+      }
+
+      function elem(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text != null) node.textContent = text;
+        return node;
+      }
+
+      function cleanBase(value) {
+        try {
+          var url = new URL(value);
+          var local = url.hostname === "127.0.0.1" || url.hostname === "localhost" || url.hostname === "[::1]" || url.hostname === "::1";
+          if (url.protocol !== "https:" && !local) return null;
+          url.hash = "";
+          url.search = "";
+          return url.href.replace(/\/?$/, "/");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function linkFor(route) {
+        return BASE_URL + "?from=magnet&lang=" + lang + "#/" + route;
+      }
+
+      function qrNode(url) {
+        var qr = qrcode(0, "Q");
+        qr.addData(url);
+        qr.make();
+        var svgText = qr.createSvgTag({ cellSize: 2, margin: 8, scalable: true });
+        var doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
+        return document.importNode(doc.documentElement, true);
+      }
+
+      function magnetNode(m, scan) {
+        var magnet = elem("section", "magnet " + m.c);
+        var head = elem("div", "head");
+        head.appendChild(elem("div", "title", m.title));
+        head.appendChild(elem("div", "sub", m.sub));
+
+        var panel = elem("div", "panel");
+        var qrWrap = elem("div", "qr");
+        qrWrap.appendChild(qrNode(linkFor(m.route)));
+        var scanWrap = elem("div", "scan");
+        scanWrap.appendChild(elem("b", "", scan.a));
+        scanWrap.appendChild(textNode(scan.b));
+        panel.appendChild(qrWrap);
+        panel.appendChild(scanWrap);
+
+        magnet.appendChild(head);
+        magnet.appendChild(panel);
+        return magnet;
+      }
+
+      function render() {
+        var d = DATA[lang];
+        var sheet = document.getElementById("sheet");
+        sheet.replaceChildren();
+        d.magnets.forEach(function (m) {
+          sheet.appendChild(magnetNode(m, d.scan));
+        });
+        document.getElementById("langEn").classList.toggle("active", lang === "en");
+        document.getElementById("langNl").classList.toggle("active", lang === "nl");
+      }
+
+      var params = new URLSearchParams(location.search);
+      if (params.get("lang") === "nl" || params.get("lang") === "en") lang = params.get("lang");
+      document.getElementById("base").value = BASE_URL;
+
+      document.getElementById("apply").addEventListener("click", function () {
+        var next = cleanBase(document.getElementById("base").value);
+        if (!next) {
+          document.getElementById("baseError").textContent = "Use an HTTPS app address, or localhost for testing.";
+          return;
+        }
+        document.getElementById("baseError").textContent = "";
+        BASE_URL = next;
+        document.getElementById("base").value = BASE_URL;
+        render();
+      });
+      document.getElementById("print").addEventListener("click", function () {
+        window.print();
+      });
+      document.getElementById("langEn").addEventListener("click", function () {
+        lang = "en";
+        render();
+      });
+      document.getElementById("langNl").addEventListener("click", function () {
+        lang = "nl";
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
